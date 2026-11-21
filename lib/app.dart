@@ -13,8 +13,12 @@ class MyApp extends StatelessWidget {
       darkTheme: AppTheme.darkTheme,
       themeMode: ThemeMode.system,
       home: Scaffold(
-        appBar: AppBar(title: const Text('Recall')),
-        body: const Center(child: Text('The recall application!')),
+        appBar: AppBar(
+          title: const Text('Recall'),
+        ),
+        body: const Center(
+          child: Text('The recall application!'),
+        ),
       ),
     );
   }
