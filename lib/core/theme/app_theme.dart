@@ -5,23 +5,23 @@ class AppTheme {
 
   static const primary = Color(0xFF171717);
 
-  static const lightBackground = Color(0xFFFAFAFA);
+  static const lightBackground = Color(0xFFF5F5F5);
   static const lightSurface = Color(0xFFFFFFFF);
-  static const lightSurfaceContainer = Color(0xFFF2F2F2);
+  static const lightSurfaceContainer = Color(0xFFEDEDED);
   static const lightText = Color(0xFF171717);
   static const lightSecondaryText = Color(0xFF737373);
-  static const lightBorder = Color(0xFFE5E5E5);
+  static const lightBorder = Color(0xFFE0E0E0);
 
   static const darkBackground = Color(0xFF121212);
-  static const darkSurface = Color(0xFF1C1C1C);
-  static const darkSurfaceContainer = Color(0xFF262626);
+  static const darkSurface = Color(0xFF1E1E1E);
+  static const darkSurfaceContainer = Color(0xFF2A2A2A);
   static const darkText = Color(0xFFF5F5F5);
   static const darkSecondaryText = Color(0xFFA3A3A3);
-  static const darkBorder = Color(0xFF333333);
+  static const darkBorder = Color(0xFF383838);
 
   static ThemeData get lightTheme {
     const colorScheme = ColorScheme.light(
-      primary: Color(0xFF171717),
+      primary: primary,
       onPrimary: Colors.white,
       secondary: Color(0xFF525252),
       onSecondary: Colors.white,
@@ -40,15 +40,27 @@ class AppTheme {
       appBarTheme: const AppBarTheme(
         backgroundColor: lightBackground,
         foregroundColor: lightText,
+        surfaceTintColor: Colors.transparent,
         elevation: 0,
         centerTitle: false,
       ),
       cardTheme: const CardThemeData(
         color: lightSurface,
+        surfaceTintColor: Colors.transparent,
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(12)),
           side: BorderSide(color: lightBorder),
+        ),
+      ),
+      navigationBarTheme: const NavigationBarThemeData(
+        backgroundColor: lightSurface,
+        indicatorColor: Colors.transparent,
+        iconTheme: WidgetStatePropertyAll(
+          IconThemeData(color: lightText),
+        ),
+        labelTextStyle: WidgetStatePropertyAll(
+          TextStyle(color: lightText),
         ),
       ),
       inputDecorationTheme: const InputDecorationTheme(
@@ -91,15 +103,27 @@ class AppTheme {
       appBarTheme: const AppBarTheme(
         backgroundColor: darkBackground,
         foregroundColor: darkText,
+        surfaceTintColor: Colors.transparent,
         elevation: 0,
         centerTitle: false,
       ),
       cardTheme: const CardThemeData(
         color: darkSurface,
+        surfaceTintColor: Colors.transparent,
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(12)),
           side: BorderSide(color: darkBorder),
+        ),
+      ),
+      navigationBarTheme: const NavigationBarThemeData(
+        backgroundColor: darkSurface,
+        indicatorColor: Colors.transparent,
+        iconTheme: WidgetStatePropertyAll(
+          IconThemeData(color: darkText),
+        ),
+        labelTextStyle: WidgetStatePropertyAll(
+          TextStyle(color: darkText),
         ),
       ),
       inputDecorationTheme: const InputDecorationTheme(

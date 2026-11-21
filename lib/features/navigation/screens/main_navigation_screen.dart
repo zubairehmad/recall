@@ -60,7 +60,6 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
             icon: Icon(Icons.home_outlined),
             selectedIcon: Icon(
               Icons.home_outlined,
-              color: Colors.white,
               size: 30,
             ),
             label: 'Home',
@@ -69,25 +68,22 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
             icon: Icon(Icons.library_books_outlined),
             selectedIcon: Icon(
               Icons.library_books_outlined,
-              color: Colors.white,
               size: 30,
             ),
             label: 'Library',
           ),
           NavigationDestination(
-            icon: Icon(Icons.bar_chart_outlined),
+            icon: Icon(Icons.leaderboard_outlined),
             selectedIcon: Icon(
-              Icons.bar_chart_outlined,
-              color: Colors.white,
+              Icons.leaderboard_outlined,
               size: 30,
             ),
             label: 'Statistics',
           ),
           NavigationDestination(
-            icon: Icon(Icons.backup_rounded),
+            icon: Icon(Icons.backup_outlined),
             selectedIcon: Icon(
-              Icons.backup_rounded,
-              color: Colors.white,
+              Icons.backup_outlined,
               size: 30,
             ),
             label: 'Backup',
