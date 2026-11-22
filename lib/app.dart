@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'core/theme/app_theme.dart';
+import 'features/navigation/screens/main_navigation_screen.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -12,14 +13,8 @@ class MyApp extends StatelessWidget {
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
       themeMode: ThemeMode.system,
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Recall'),
-        ),
-        body: const Center(
-          child: Text('The recall application!'),
-        ),
-      ),
+      debugShowCheckedModeBanner: false,
+      home: const MainNavigationScreen(),
     );
   }
 }
