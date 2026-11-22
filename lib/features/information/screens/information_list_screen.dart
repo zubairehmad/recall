@@ -6,11 +6,12 @@ class InformationListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Information List Screen'),
-      ),
-      body: const Center(
-        child: Text('Information list screen!'),
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            title: Text('Library'),
+          ),
+        ],
       ),
     );
   }
