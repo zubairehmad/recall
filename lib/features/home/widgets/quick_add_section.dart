@@ -27,19 +27,19 @@ class QuickAddSection extends StatelessWidget {
             childAspectRatio: 3,
           ),
           delegate: SliverChildListDelegate([
-            _GridElement(
+            _GridItem(
               title: 'Claim',
               onPressed: () {},
             ),
-            _GridElement(
+            _GridItem(
               title: 'Fact',
               onPressed: () {},
             ),
-            _GridElement(
+            _GridItem(
               title: 'Tip',
               onPressed: () {},
             ),
-            _GridElement(
+            _GridItem(
               title: 'Note',
               onPressed: () {},
             ),
@@ -50,11 +50,12 @@ class QuickAddSection extends StatelessWidget {
   }
 }
 
-class _GridElement extends StatelessWidget {
+class _GridItem extends StatelessWidget {
   final String title;
+
   final VoidCallback onPressed;
 
-  const _GridElement({
+  const _GridItem({
     required this.title,
     required this.onPressed,
   });

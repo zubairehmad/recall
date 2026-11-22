@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../widgets/custom_search_bar.dart';
 import '../widgets/quick_add_section.dart';
+import '../widgets/basic_overview_section.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -50,6 +51,10 @@ class HomeScreen extends StatelessWidget {
           const SliverPadding(
             padding: padding,
             sliver: QuickAddSection(),
+          ),
+          const SliverPadding(
+            padding: padding,
+            sliver: BasicOverviewSection(),
           ),
         ],
       ),
