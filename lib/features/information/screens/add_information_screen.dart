@@ -111,8 +111,9 @@ class _AddInformationScreenState extends State<AddInformationScreen> {
                     ),
                     const SizedBox(height: 8),
                     TextFormField(
-                      maxLength: 80,
+                      minLines: 1,
                       maxLines: 2,
+                      maxLength: 80,
                       controller: _titleController,
                       validator: _emptyValidator,
                       decoration: const InputDecoration(
