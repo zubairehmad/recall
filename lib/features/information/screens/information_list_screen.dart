@@ -44,7 +44,7 @@ final _infoList = [
     title: "World War 2 was consipiracy!",
     content: 'I dont know!!',
     type: InformationType.claim,
-    status: InformationStatus.unreviewed,
+    claimStatus: ClaimStatus.unreviewed,
     createdAt: DateTime.now().subtract(const Duration(days: 23)),
     updatedAt: DateTime.now().subtract(const Duration(days: 23)),
   ),
