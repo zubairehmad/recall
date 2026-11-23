@@ -10,37 +10,37 @@ class StatisticsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const EdgeInsetsGeometry padding = EdgeInsets.symmetric(
+    const padding = EdgeInsets.symmetric(
       horizontal: 12,
       vertical: 10,
     );
 
-    return Scaffold(
+    return const Scaffold(
       body: CustomScrollView(
         slivers: [
-          const SliverToBoxAdapter(
+          SliverToBoxAdapter(
             child: SizedBox(height: 12),
           ),
-          const CustomSliverAppBar(
+          CustomSliverAppBar(
             title: 'Simple Statistics',
-            subtitle: 'See what you got here',
+            subtitle: 'See what you got here.',
           ),
-          const SliverToBoxAdapter(
-            child: SizedBox(height: 28),
+          SliverToBoxAdapter(
+            child: SizedBox(height: 12),
           ),
-          const SliverToBoxAdapter(
+          SliverToBoxAdapter(
             child: Padding(
               padding: padding,
               child: InfoDistributionCard(),
             ),
           ),
-          const SliverToBoxAdapter(
+          SliverToBoxAdapter(
             child: Padding(
               padding: padding,
               child: ClaimDistributionCard(),
             ),
           ),
-          const SliverToBoxAdapter(
+          SliverToBoxAdapter(
             child: Padding(
               padding: padding,
               child: ReviewProgressIndicator(),
