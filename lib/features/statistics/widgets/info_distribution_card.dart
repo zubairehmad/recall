@@ -20,31 +20,29 @@ class _InfoDistributionCardState extends State<InfoDistributionCard> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final chartSize = (constraints.maxWidth * 0.48).clamp(130.0, 220.0);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Total Info Distribution',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        SizedBox(height: 12),
+        Card(
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final chartSize = (constraints.maxWidth * 0.48).clamp(
+                130.0,
+                220.0,
+              );
 
-          final centerRadius = chartSize * 0.275;
-          final sectionRadius = chartSize * 0.125;
+              final centerRadius = chartSize * 0.275;
+              final sectionRadius = chartSize * 0.125;
 
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: 12),
-              Row(
-                children: [
-                  const SizedBox(width: 12),
-                  Text(
-                    'Total Info Distribution',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(
+              return SizedBox(
                 height: chartSize,
                 child: Row(
                   children: [
@@ -108,7 +106,9 @@ class _InfoDistributionCardState extends State<InfoDistributionCard> {
                               ),
                               Text(
                                 'Total',
-                                style: Theme.of(context).textTheme.bodySmall,
+                                style: Theme.of(
+                                  context,
+                                ).textTheme.bodySmall,
                               ),
                             ],
                           ),
@@ -135,11 +135,11 @@ class _InfoDistributionCardState extends State<InfoDistributionCard> {
                     ),
                   ],
                 ),
-              ),
-            ],
-          );
-        },
-      ),
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 }
