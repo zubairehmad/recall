@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../core/widgets/custom_sliver_app_bar.dart';
 import '../widgets/info_distribution_card.dart';
+import '../widgets/claim_distribution_card.dart';
 
 class StatisticsScreen extends StatelessWidget {
   const StatisticsScreen({super.key});
@@ -30,6 +31,12 @@ class StatisticsScreen extends StatelessWidget {
             child: Padding(
               padding: padding,
               child: InfoDistributionCard(),
+            ),
+          ),
+          const SliverToBoxAdapter(
+            child: Padding(
+              padding: padding,
+              child: ClaimDistributionCard(),
             ),
           ),
         ],

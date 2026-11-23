@@ -92,19 +92,24 @@ class _DistributionCardState extends State<DistributionCard> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            widget.sections
-                                .fold<int>(
-                                  0,
-                                  (prev, curr) => prev + curr.count,
-                                )
-                                .toString(),
+                            _selectedIdx != null
+                                ? widget.sections[_selectedIdx!].count
+                                      .toString()
+                                : widget.sections
+                                      .fold<int>(
+                                        0,
+                                        (prev, curr) => prev + curr.count,
+                                      )
+                                      .toString(),
                             style: TextStyle(
                               fontSize: chartSize * 0.12,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                           Text(
-                            'Total',
+                            _selectedIdx != null
+                                ? widget.sections[_selectedIdx!].label
+                                : 'Total',
                             style: Theme.of(
                               context,
                             ).textTheme.bodySmall,
