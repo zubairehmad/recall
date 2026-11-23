@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
       title: 'Recall',
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
-      themeMode: ThemeMode.light,
+      themeMode: ThemeMode.system,
       debugShowCheckedModeBanner: false,
       home: const MainNavigationScreen(),
     );

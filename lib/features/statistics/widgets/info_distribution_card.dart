@@ -5,12 +5,10 @@ class InfoDistributionCard extends StatefulWidget {
   const InfoDistributionCard({super.key});
 
   @override
-  State<InfoDistributionCard> createState() =>
-      _InfoDistributionCardState();
+  State<InfoDistributionCard> createState() => _InfoDistributionCardState();
 }
 
-class _InfoDistributionCardState
-    extends State<InfoDistributionCard> {
+class _InfoDistributionCardState extends State<InfoDistributionCard> {
   final sections = [
     (label: 'Claims', count: 40, color: Colors.blue),
     (label: 'Facts', count: 30, color: Colors.orange),
@@ -23,110 +21,124 @@ class _InfoDistributionCardState
   @override
   Widget build(BuildContext context) {
     return Card(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(height: 12),
-          Row(
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final chartSize = (constraints.maxWidth * 0.48).clamp(130.0, 220.0);
+
+          final centerRadius = chartSize * 0.275;
+          final sectionRadius = chartSize * 0.125;
+
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(width: 12),
-              Text(
-                'Total Info Distribution',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
+              SizedBox(height: 12),
+              Row(
+                children: [
+                  const SizedBox(width: 12),
+                  Text(
+                    'Total Info Distribution',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
-          SizedBox(height: 8),
-          SizedBox(
-            height: 200,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SizedBox(
-                  width: 200,
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      PieChart(
-                        PieChartData(
-                          sections: List.generate(
-                            sections.length,
-                            (idx) {
-                              final item = sections[idx];
-                              final isSelected = _selectedIdx == idx;
-
-                              return PieChartSectionData(
-                                value: item.count.toDouble(),
-                                color: item.color,
-                                radius: isSelected ? 30 : 25,
-                                showTitle: false,
-                              );
-                            },
-                          ),
-                          centerSpaceRadius: 55,
-                          sectionsSpace: 3,
-                          pieTouchData: PieTouchData(
-                            enabled: true,
-                            touchCallback: (event, response) {
-                              if (event is! FlTapDownEvent ||
-                                  response?.touchedSection == null) {
-                                return;
-                              }
-
-                              final idx =
-                                  response!.touchedSection!.touchedSectionIndex;
-
-                              setState(() {
-                                _selectedIdx = idx < 0 || idx == _selectedIdx
-                                    ? null
-                                    : idx;
-                              });
-                            },
-                          ),
-                        ),
-                      ),
-                      Column(
-                        mainAxisSize: MainAxisSize.min,
+              SizedBox(
+                height: chartSize,
+                child: Row(
+                  children: [
+                    SizedBox(
+                      width: chartSize,
+                      height: chartSize,
+                      child: Stack(
+                        alignment: Alignment.center,
                         children: [
-                          const Text(
-                            '100',
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
+                          PieChart(
+                            PieChartData(
+                              sections: List.generate(
+                                sections.length,
+                                (idx) {
+                                  final item = sections[idx];
+                                  final isSelected = _selectedIdx == idx;
+
+                                  return PieChartSectionData(
+                                    value: item.count.toDouble(),
+                                    color: item.color,
+                                    radius: isSelected
+                                        ? sectionRadius * 1.15
+                                        : sectionRadius,
+                                    showTitle: false,
+                                  );
+                                },
+                              ),
+                              centerSpaceRadius: centerRadius,
+                              sectionsSpace: 3,
+                              pieTouchData: PieTouchData(
+                                enabled: true,
+                                touchCallback: (event, response) {
+                                  if (event is! FlTapDownEvent ||
+                                      response?.touchedSection == null) {
+                                    return;
+                                  }
+
+                                  final idx = response!
+                                      .touchedSection!
+                                      .touchedSectionIndex;
+
+                                  setState(() {
+                                    _selectedIdx =
+                                        idx < 0 || idx == _selectedIdx
+                                        ? null
+                                        : idx;
+                                  });
+                                },
+                              ),
                             ),
                           ),
-                          Text(
-                            'Total',
-                            style: Theme.of(context).textTheme.bodySmall,
+                          Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                '100',
+                                style: TextStyle(
+                                  fontSize: chartSize * 0.12,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Text(
+                                'Total',
+                                style: Theme.of(context).textTheme.bodySmall,
+                              ),
+                            ],
                           ),
                         ],
                       ),
-                    ],
-                  ),
-                ),
-                SizedBox(width: 28),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    for (int i = 0; i < sections.length; i++) ...[
-                      if (i != 0) const SizedBox(height: 2),
-                      _LegendItem(
-                        label: sections[i].label,
-                        color: sections[i].color,
-                        count: sections[i].count,
-                        selected: _selectedIdx == i,
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          for (int i = 0; i < sections.length; i++) ...[
+                            if (i != 0) const SizedBox(height: 6),
+                            _LegendItem(
+                              label: sections[i].label,
+                              color: sections[i].color,
+                              count: sections[i].count,
+                              selected: _selectedIdx == i,
+                            ),
+                          ],
+                        ],
                       ),
-                    ],
+                    ),
                   ],
                 ),
-              ],
-            ),
-          ),
-        ],
+              ),
+            ],
+          );
+        },
       ),
     );
   }
