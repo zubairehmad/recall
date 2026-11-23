@@ -1,8 +1,36 @@
+import 'package:flutter/material.dart' show Icons, IconData;
+
 enum InformationType {
   claim,
   fact,
   tip,
-  note,
+  note;
+
+  String get displayName {
+    switch (this) {
+      case InformationType.claim:
+        return 'Claim';
+      case InformationType.fact:
+        return 'Fact';
+      case InformationType.tip:
+        return 'Tip';
+      case InformationType.note:
+        return 'Note';
+    }
+  }
+
+  IconData get icon {
+    switch (this) {
+      case InformationType.claim:
+        return Icons.campaign_outlined;
+      case InformationType.fact:
+        return Icons.fact_check_outlined;
+      case InformationType.tip:
+        return Icons.lightbulb_outline;
+      case InformationType.note:
+        return Icons.sticky_note_2_outlined;
+    }
+  }
 }
 
 enum ClaimStatus {
