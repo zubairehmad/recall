@@ -97,6 +97,11 @@ class _InfoTypeSelector extends StatelessWidget {
       elevation: 0,
       clipBehavior: Clip.antiAlias,
       color: isSelected ? colorScheme.primaryContainer : null,
+      shape: isSelected
+          ? const RoundedRectangleBorder(
+              borderRadius: BorderRadiusGeometry.all(Radius.circular(12)),
+            )
+          : null,
       child: InkWell(
         onTap: onPressed,
         child: Padding(
