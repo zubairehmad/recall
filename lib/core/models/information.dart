@@ -6,10 +6,10 @@ enum InformationType {
 }
 
 enum InformationStatus {
-  unverified,
+  unreviewed,
   verified,
   disputed,
-  falseClaim,
+  incorrect,
 }
 
 class Information {
