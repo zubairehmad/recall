@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/models/information.dart';
-import 'information_list_item.dart';
+import '../../information/widgets/information_list_item.dart';
 
 /// mock data
 final _recentlyAddedInfo = [
