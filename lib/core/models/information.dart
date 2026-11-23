@@ -5,7 +5,7 @@ enum InformationType {
   note,
 }
 
-enum InformationStatus {
+enum ClaimStatus {
   unreviewed,
   verified,
   disputed,
@@ -17,7 +17,7 @@ class Information {
   final String title;
   final String content;
   final InformationType type;
-  final InformationStatus? status;
+  final ClaimStatus? claimStatus;
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -28,10 +28,12 @@ class Information {
     required this.type,
     required this.createdAt,
     required this.updatedAt,
-    this.status,
+    this.claimStatus,
   }) : assert(
-         (type == InformationType.claim || type == InformationType.fact)
-             ? status != null
-             : status == null,
+         type == InformationType.claim
+             ? claimStatus != null
+             : claimStatus == null,
        );
+
+  bool get isClaim => type == InformationType.claim;
 }

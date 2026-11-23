@@ -18,7 +18,6 @@ final _recentlyAddedInfo = [
     title: "Newton's third law",
     content: 'Every action has a reaction.',
     type: InformationType.fact,
-    status: InformationStatus.verified,
     createdAt: DateTime.now().subtract(const Duration(days: 1)),
     updatedAt: DateTime.now().subtract(const Duration(days: 1)),
   ),
