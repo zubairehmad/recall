@@ -20,10 +20,10 @@ class InfoDistributionCard extends StatelessWidget {
         SizedBox(height: 12),
         DistributionCard(
           sections: [
-            (label: 'Claims', count: 40, color: Colors.blue),
-            (label: 'Facts', count: 16, color: Colors.orange),
-            (label: 'Tips', count: 23, color: Colors.green),
-            (label: 'Notes', count: 18, color: Colors.purple),
+            (label: 'Claims', count: 52, color: Colors.blue),
+            (label: 'Facts', count: 24, color: Colors.orange),
+            (label: 'Tips', count: 36, color: Colors.green),
+            (label: 'Notes', count: 16, color: Colors.purple),
           ],
         ),
       ],

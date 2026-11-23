@@ -20,10 +20,10 @@ class ClaimDistributionCard extends StatelessWidget {
         SizedBox(height: 12),
         DistributionCard(
           sections: [
-            (label: 'Unreviewed', count: 20, color: Colors.red),
-            (label: 'Disputed', count: 3, color: Colors.orange),
-            (label: 'Incorrect', count: 5, color: Colors.purple),
-            (label: 'Verified', count: 12, color: Colors.green),
+            (label: 'Unreviewed', count: 10, color: Colors.red),
+            (label: 'Disputed', count: 14, color: Colors.orange),
+            (label: 'Incorrect', count: 8, color: Colors.purple),
+            (label: 'Verified', count: 20, color: Colors.green),
           ],
         ),
       ],

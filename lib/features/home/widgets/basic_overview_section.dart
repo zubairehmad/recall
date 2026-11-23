@@ -70,7 +70,7 @@ class BasicOverviewSection extends StatelessWidget {
                     width: width,
                     child: _CustomGridItem(
                       icon: const Icon(Icons.bookmark_outline),
-                      number: 50,
+                      number: 16,
                       text: 'Notes',
                       onPressed: () {},
                     ),
