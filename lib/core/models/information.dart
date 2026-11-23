@@ -30,8 +30,6 @@ class Information {
     required this.updatedAt,
     this.status,
   }) : assert(
-         (type == InformationType.claim || type == InformationType.fact)
-             ? status != null
-             : status == null,
+         type == InformationType.claim ? status != null : status == null,
        );
 }
