@@ -7,16 +7,7 @@ enum InformationType {
   note;
 
   String get displayName {
-    switch (this) {
-      case InformationType.claim:
-        return 'Claim';
-      case InformationType.fact:
-        return 'Fact';
-      case InformationType.tip:
-        return 'Tip';
-      case InformationType.note:
-        return 'Note';
-    }
+    return name[0].toUpperCase() + name.substring(1);
   }
 
   IconData get icon {
@@ -37,7 +28,11 @@ enum ClaimStatus {
   unreviewed,
   verified,
   disputed,
-  incorrect,
+  incorrect;
+
+  String get displayName {
+    return name[0].toUpperCase() + name.substring(1);
+  }
 }
 
 class Information {

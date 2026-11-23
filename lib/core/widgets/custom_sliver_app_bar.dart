@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class CustomSliverAppBar extends StatelessWidget {
   final String title;
   final String? subtitle;
-
+  final bool centerTitle;
   final List<Widget>? actions;
 
   const CustomSliverAppBar({
@@ -11,14 +11,18 @@ class CustomSliverAppBar extends StatelessWidget {
     required this.title,
     this.subtitle,
     this.actions,
+    this.centerTitle = false,
   });
 
   @override
   Widget build(BuildContext context) {
     return SliverAppBar(
       actions: actions,
+      centerTitle: centerTitle,
       title: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: centerTitle
+            ? CrossAxisAlignment.center
+            : CrossAxisAlignment.start,
         children: [
           Text(
             title,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/models/information.dart';
+import '../../../core/widgets/custom_sliver_app_bar.dart';
 
 class AddInformationScreen extends StatefulWidget {
   static const routeName = '/add-info-screen';
@@ -18,6 +19,7 @@ class AddInformationScreen extends StatefulWidget {
 
 class _AddInformationScreenState extends State<AddInformationScreen> {
   late InformationType _selectedType;
+  ClaimStatus _selectedStatus = ClaimStatus.unreviewed;
 
   final _formKey = GlobalKey<FormState>();
   final _titleController = TextEditingController();
@@ -26,12 +28,26 @@ class _AddInformationScreenState extends State<AddInformationScreen> {
   @override
   void initState() {
     super.initState();
-
     _selectedType = widget.initialType ?? InformationType.values[0];
+  }
+
+  @override
+  void dispose() {
+    _titleController.dispose();
+    _contentControler.dispose();
+    super.dispose();
   }
 
   void _onSubmit() {
     if (!(_formKey.currentState?.validate() ?? false)) return;
+  }
+
+  String? _emptyValidator(String? v) {
+    if (v == null || v.isEmpty) {
+      return 'This field cannot be empty!';
+    }
+
+    return null;
   }
 
   @override
@@ -42,111 +58,130 @@ class _AddInformationScreenState extends State<AddInformationScreen> {
     );
 
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text(
-          'Add Information',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
+      body: CustomScrollView(
+        slivers: [
+          const CustomSliverAppBar(
+            title: 'Add Information',
+            centerTitle: true,
           ),
-        ),
-      ),
-      body: Form(
-        key: _formKey,
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              LayoutBuilder(
-                builder: (ctx, constraints) {
-                  final width =
-                      (constraints.maxWidth - 18) /
-                      InformationType.values.length;
+          SliverToBoxAdapter(
+            child: Form(
+              key: _formKey,
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    LayoutBuilder(
+                      builder: (ctx, constraints) {
+                        final width =
+                            (constraints.maxWidth - 18) /
+                            InformationType.values.length;
 
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: List.generate(InformationType.values.length, (i) {
-                      final type = InformationType.values[i];
-                      return SizedBox(
-                        width: width,
-                        child: _InfoTypeSelector(
-                          icon: type.icon,
-                          label: type.displayName,
-                          isSelected: _selectedType == type,
-                          onPressed: () {
-                            if (_selectedType != type) {
-                              setState(() => _selectedType = type);
-                            }
-                          },
-                        ),
-                      );
-                    }),
-                  );
-                },
-              ),
-              const SizedBox(height: 16),
-              const Text(
-                'Title',
-                style: textStyle,
-              ),
-              const SizedBox(height: 8),
-              TextFormField(
-                maxLength: 80,
-                controller: _titleController,
-                validator: (v) {
-                  if (v == null || v.isEmpty) {
-                    return 'This field cannot be empty!';
-                  }
-                  return null;
-                },
-                decoration: const InputDecoration(
-                  hintText: 'Enter a short title...',
-                  counterText: '',
-                ),
-              ),
-              const SizedBox(height: 16),
-              const Text(
-                'Content',
-                style: textStyle,
-              ),
-              const SizedBox(height: 8),
-              TextFormField(
-                minLines: 5,
-                maxLines: 8,
-                maxLength: 2000,
-                controller: _contentControler,
-                validator: (v) {
-                  if (v == null || v.isEmpty) {
-                    return 'This field cannot be empty!';
-                  }
-                  return null;
-                },
-                decoration: const InputDecoration(
-                  hintText: 'Add your information...',
-                ),
-              ),
-              const SizedBox(height: 16),
-              SizedBox(
-                height: 40,
-                width: double.infinity,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: ElevatedButton(
-                    onPressed: _onSubmit,
-                    style: ElevatedButton.styleFrom(
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(12)),
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: List.generate(
+                            InformationType.values.length,
+                            (
+                              i,
+                            ) {
+                              final type = InformationType.values[i];
+                              return SizedBox(
+                                width: width,
+                                child: _InfoTypeSelector(
+                                  icon: type.icon,
+                                  label: type.displayName,
+                                  isSelected: _selectedType == type,
+                                  onPressed: () {
+                                    if (_selectedType != type) {
+                                      setState(() => _selectedType = type);
+                                    }
+                                  },
+                                ),
+                              );
+                            },
+                          ),
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    const Text(
+                      'Title',
+                      style: textStyle,
+                    ),
+                    const SizedBox(height: 8),
+                    TextFormField(
+                      maxLength: 80,
+                      maxLines: 2,
+                      controller: _titleController,
+                      validator: _emptyValidator,
+                      decoration: const InputDecoration(
+                        hintText: 'Enter a short title...',
+                        counterText: '',
                       ),
                     ),
-                    child: const Text('Save information'),
-                  ),
+                    const SizedBox(height: 16),
+                    const Text(
+                      'Content',
+                      style: textStyle,
+                    ),
+                    const SizedBox(height: 8),
+                    TextFormField(
+                      minLines: 5,
+                      maxLines: 8,
+                      maxLength: 2000,
+                      controller: _contentControler,
+                      validator: _emptyValidator,
+                      decoration: const InputDecoration(
+                        hintText: 'Add your information...',
+                      ),
+                    ),
+                    if (_selectedType == InformationType.claim) ...[
+                      const Text(
+                        'Claim Status',
+                        style: textStyle,
+                      ),
+                      const SizedBox(height: 8),
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: ClaimStatus.values.map((status) {
+                          return ChoiceChip(
+                            label: Text(status.displayName),
+                            selected: _selectedStatus == status,
+                            onSelected: (_) {
+                              setState(() => _selectedStatus = status);
+                            },
+                          );
+                        }).toList(),
+                      ),
+                    ],
+                    const SizedBox(height: 16),
+                    SizedBox(
+                      height: 40,
+                      width: double.infinity,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        child: ElevatedButton(
+                          onPressed: _onSubmit,
+                          style: ElevatedButton.styleFrom(
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(12),
+                              ),
+                            ),
+                          ),
+                          child: const Text('Save information'),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                  ],
                 ),
               ),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
