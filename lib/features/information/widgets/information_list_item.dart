@@ -21,7 +21,7 @@ class InformationListItem extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
         child: Row(
           children: [
-            Icon(getIcon(information.type)),
+            Icon(information.type.icon),
             SizedBox(width: 12),
             Expanded(
               child: Column(
@@ -38,7 +38,7 @@ class InformationListItem extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    '${getInfoTypeName(information.type)} • ${asString(information.createdAt)}',
+                    '${information.type.displayName} • ${asString(information.createdAt)}',
                     style: TextStyle(
                       fontSize: 13,
                       color: Theme.of(
@@ -82,31 +82,5 @@ class InformationListItem extends StatelessWidget {
 
     final years = months ~/ 12;
     return '$years year${years == 1 ? '' : 's'} ago';
-  }
-
-  String getInfoTypeName(InformationType type) {
-    switch (type) {
-      case InformationType.tip:
-        return 'Tip';
-      case InformationType.fact:
-        return 'Fact';
-      case InformationType.claim:
-        return 'Claim';
-      case InformationType.note:
-        return 'Note';
-    }
-  }
-
-  IconData getIcon(InformationType type) {
-    switch (type) {
-      case InformationType.tip:
-        return Icons.lightbulb_outline;
-      case InformationType.fact:
-        return Icons.fact_check_outlined;
-      case InformationType.claim:
-        return Icons.campaign_outlined;
-      case InformationType.note:
-        return Icons.sticky_note_2_outlined;
-    }
   }
 }
