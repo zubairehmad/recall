@@ -79,6 +79,32 @@ class AppTheme {
           borderSide: BorderSide(color: primary, width: 1.5),
         ),
       ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: primary,
+          foregroundColor: Colors.white,
+          disabledBackgroundColor: lightSurfaceContainer,
+          disabledForegroundColor: lightSecondaryText,
+          elevation: 0,
+          padding: const EdgeInsets.symmetric(
+            horizontal: 20,
+            vertical: 14,
+          ),
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(24)),
+          ),
+        ),
+      ),
+      dropdownMenuTheme: const DropdownMenuThemeData(
+        textStyle: TextStyle(
+          color: lightText,
+          fontSize: 15,
+          fontWeight: FontWeight.w500,
+        ),
+        menuStyle: MenuStyle(
+          backgroundColor: WidgetStatePropertyAll(lightSurface),
+        ),
+      ),
     );
   }
 
@@ -140,6 +166,32 @@ class AppTheme {
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(12)),
           borderSide: BorderSide(color: darkText, width: 1.5),
+        ),
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: darkText,
+          foregroundColor: darkBackground,
+          disabledBackgroundColor: darkSurfaceContainer,
+          disabledForegroundColor: darkSecondaryText,
+          elevation: 0,
+          padding: const EdgeInsets.symmetric(
+            horizontal: 20,
+            vertical: 14,
+          ),
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(24)),
+          ),
+        ),
+      ),
+      dropdownMenuTheme: const DropdownMenuThemeData(
+        textStyle: TextStyle(
+          color: darkText,
+          fontSize: 15,
+          fontWeight: FontWeight.w500,
+        ),
+        menuStyle: MenuStyle(
+          backgroundColor: WidgetStatePropertyAll(darkSurface),
         ),
       ),
     );

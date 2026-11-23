@@ -32,7 +32,11 @@ class _SearchAndFilterSectionState extends State<SearchAndFilterSection> {
       constraints: const BoxConstraints(maxWidth: 600),
       builder: (ctx) {
         return const Padding(
-          padding: EdgeInsets.all(16),
+          padding: EdgeInsets.only(
+            left: 16,
+            right: 16,
+            bottom: 24,
+          ),
           child: FilterOptionSheetWidget(),
         );
       },
@@ -143,7 +147,11 @@ class _FilterOptionSheetWidgetState extends State<FilterOptionSheetWidget> {
             ),
           ],
         ),
-        const SizedBox(height: 24),
+        const SizedBox(height: 8),
+        const Divider(
+          radius: BorderRadius.all(Radius.circular(24)),
+        ),
+        const SizedBox(height: 10),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -165,7 +173,6 @@ class _FilterOptionSheetWidgetState extends State<FilterOptionSheetWidget> {
               value: _selectedDropdown,
               elevation: 0,
               focusColor: Colors.transparent,
-              style: textStyle,
               onChanged: (option) {
                 if (option != null && option != _selectedDropdown) {
                   setState(() => _selectedDropdown = option);
@@ -204,12 +211,12 @@ class _FilterOptionSheetWidgetState extends State<FilterOptionSheetWidget> {
             ],
           ],
         ),
-        const SizedBox(height: 38),
+        const SizedBox(height: 24),
         SizedBox(
           width: double.infinity,
           height: 48,
           child: ElevatedButton(
-            onPressed: null,
+            onPressed: () {},
             child: const Text('Apply filter'),
           ),
         ),
