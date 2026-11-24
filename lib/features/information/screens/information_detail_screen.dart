@@ -83,7 +83,7 @@ class InformationDetailScreen extends StatelessWidget {
                 const SizedBox(height: 20),
                 Text(
                   information.title,
-                  style: theme.textTheme.headlineMedium?.copyWith(
+                  style: theme.textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
                 ),
