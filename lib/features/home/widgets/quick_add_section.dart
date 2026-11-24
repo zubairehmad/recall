@@ -1,7 +1,17 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/models/information.dart';
+import '../../information/screens/add_information_screen.dart';
+
 class QuickAddSection extends StatelessWidget {
   const QuickAddSection({super.key});
+
+  void _handleOnPressed(BuildContext ctx, InformationType type) {
+    Navigator.of(ctx).pushNamed(
+      AddInformationScreen.routeName,
+      arguments: type,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,19 +39,19 @@ class QuickAddSection extends StatelessWidget {
           delegate: SliverChildListDelegate([
             _GridItem(
               title: 'Claim',
-              onPressed: () {},
+              onPressed: () => _handleOnPressed(context, InformationType.claim),
             ),
             _GridItem(
               title: 'Fact',
-              onPressed: () {},
+              onPressed: () => _handleOnPressed(context, InformationType.fact),
             ),
             _GridItem(
               title: 'Tip',
-              onPressed: () {},
+              onPressed: () => _handleOnPressed(context, InformationType.tip),
             ),
             _GridItem(
               title: 'Note',
-              onPressed: () {},
+              onPressed: () => _handleOnPressed(context, InformationType.note),
             ),
           ]),
         ),

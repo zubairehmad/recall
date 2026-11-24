@@ -246,6 +246,11 @@ class _TypeFilterChip extends StatelessWidget {
                 ? Colors.blueGrey
                 : Colors.blueGrey.shade100
           : null,
+      shape: selected
+          ? const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(12)),
+            )
+          : null,
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: selected ? onUnselected : onSelected,

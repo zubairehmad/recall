@@ -4,6 +4,7 @@ import '../../../core/models/information.dart';
 import '../../../core/widgets/custom_sliver_app_bar.dart';
 import '../widgets/search_and_section.dart';
 import '../widgets/information_list_item.dart';
+import 'add_information_screen.dart';
 
 /// mock data
 final _infoList = [
@@ -69,7 +70,9 @@ class InformationListScreen extends StatelessWidget {
               Padding(
                 padding: const EdgeInsetsGeometry.only(right: 8),
                 child: IconButton(
-                  onPressed: () {},
+                  onPressed: () => Navigator.of(
+                    context,
+                  ).pushNamed(AddInformationScreen.routeName),
                   icon: const Icon(Icons.add),
                 ),
               ),

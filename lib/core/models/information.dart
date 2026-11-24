@@ -1,15 +1,51 @@
+import 'package:flutter/material.dart' show Icons, IconData;
+
 enum InformationType {
   claim,
   fact,
   tip,
-  note,
+  note;
+
+  String get displayName {
+    return name[0].toUpperCase() + name.substring(1);
+  }
+
+  IconData get icon {
+    switch (this) {
+      case InformationType.claim:
+        return Icons.campaign_outlined;
+      case InformationType.fact:
+        return Icons.fact_check_outlined;
+      case InformationType.tip:
+        return Icons.lightbulb_outline;
+      case InformationType.note:
+        return Icons.sticky_note_2_outlined;
+    }
+  }
 }
 
 enum ClaimStatus {
   unreviewed,
   verified,
   disputed,
-  incorrect,
+  incorrect;
+
+  String get displayName {
+    return name[0].toUpperCase() + name.substring(1);
+  }
+
+  IconData get icon {
+    switch (this) {
+      case ClaimStatus.unreviewed:
+        return Icons.hourglass_empty;
+      case ClaimStatus.verified:
+        return Icons.verified_outlined;
+      case ClaimStatus.disputed:
+        return Icons.gavel;
+      case ClaimStatus.incorrect:
+        return Icons.cancel_outlined;
+    }
+  }
 }
 
 class Information {
@@ -36,4 +72,33 @@ class Information {
        );
 
   bool get isClaim => type == InformationType.claim;
+
+  /// Note that when changing type, providing `claimStatus` is not required since it will
+  /// automatically make `claimStatus` field `null`.
+  ///
+  /// However if the `InformationType` is `InformationType.claim`, then providing `null`
+  /// will reuse old `claimStatus` because `claimStatus` cannot be `null` when info type is
+  /// `InformationType.claim`.
+  Information copyWith({
+    String? id,
+    String? title,
+    String? content,
+    InformationType? type,
+    ClaimStatus? claimStatus,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) {
+    final newType = type ?? this.type;
+    return Information(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      content: content ?? this.content,
+      type: newType,
+      claimStatus: newType == InformationType.claim
+          ? claimStatus ?? this.claimStatus
+          : null,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
 }
