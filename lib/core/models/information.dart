@@ -72,4 +72,33 @@ class Information {
        );
 
   bool get isClaim => type == InformationType.claim;
+
+  /// Note that when changing type, providing `claimStatus` is not required since it will
+  /// automatically make `claimStatus` field `null`.
+  ///
+  /// However if the `InformationType` is `InformationType.claim`, then providing `null`
+  /// will reuse old `claimStatus` because `claimStatus` cannot be `null` when info type is
+  /// `InformationType.claim`.
+  Information copyWith({
+    String? id,
+    String? title,
+    String? content,
+    InformationType? type,
+    ClaimStatus? claimStatus,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) {
+    final newType = type ?? this.type;
+    return Information(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      content: content ?? this.content,
+      type: newType,
+      claimStatus: newType == InformationType.claim
+          ? claimStatus ?? this.claimStatus
+          : null,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
 }

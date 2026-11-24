@@ -41,6 +41,26 @@ class _AddInformationScreenState extends State<AddInformationScreen> {
 
   void _onSubmit() {
     if (!(_formKey.currentState?.validate() ?? false)) return;
+
+    final title = _titleController.text.trim();
+    final content = _contentControler.text.trim();
+
+    final newInfo = Information(
+      id: 'testing',
+      title: title,
+      content: content,
+      type: _selectedType,
+      claimStatus: _selectedType == InformationType.claim
+          ? _selectedStatus.value
+          : null,
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+    );
+
+    debugPrint('Info title: $title');
+    debugPrint('Info content: $content');
+    debugPrint('Info type: ${_selectedType.displayName}');
+    debugPrint('Claim status: ${newInfo.claimStatus?.displayName}');
   }
 
   String? _emptyValidator(String? v) {
