@@ -4,6 +4,7 @@ import 'core/models/information.dart';
 import 'core/theme/app_theme.dart';
 import 'features/navigation/screens/main_navigation_screen.dart';
 import 'features/information/screens/information_form_screen.dart';
+import 'features/information/screens/information_detail_screen.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -29,6 +30,11 @@ class MyApp extends StatelessWidget {
             initialType: initialType,
             information: information,
           );
+        },
+        InformationDetailScreen.routeName: (ctx) {
+          final info = ModalRoute.of(ctx)?.settings.arguments as Information;
+
+          return InformationDetailScreen(information: info);
         },
       },
     );

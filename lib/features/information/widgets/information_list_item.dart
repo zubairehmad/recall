@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../screens/information_form_screen.dart';
+import '../screens/information_detail_screen.dart';
 import '../../../core/models/information.dart';
 
 class InformationListItem extends StatelessWidget {
@@ -15,8 +15,8 @@ class InformationListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () => Navigator.of(context).pushNamed(
-        InformationFormScreen.routeName,
-        arguments: {'information': information},
+        InformationDetailScreen.routeName,
+        arguments: information,
       ),
       borderRadius: const BorderRadius.all(Radius.circular(12)),
       child: Padding(
