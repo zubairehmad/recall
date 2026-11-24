@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../../core/models/information.dart';
 import '../../../core/widgets/custom_sliver_app_bar.dart';
@@ -46,7 +47,7 @@ class _AddInformationScreenState extends State<AddInformationScreen> {
     final content = _contentControler.text.trim();
 
     final newInfo = Information(
-      id: 'testing',
+      id: const Uuid().v4(),
       title: title,
       content: content,
       type: _selectedType,
@@ -57,6 +58,7 @@ class _AddInformationScreenState extends State<AddInformationScreen> {
       updatedAt: DateTime.now(),
     );
 
+    debugPrint('Generated UUID (V4): ${newInfo.id}');
     debugPrint('Info title: $title');
     debugPrint('Info content: $content');
     debugPrint('Info type: ${_selectedType.displayName}');
