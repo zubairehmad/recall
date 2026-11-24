@@ -64,7 +64,6 @@ class RecentlyAddedSection extends StatelessWidget {
         SliverList.separated(
           itemBuilder: (_, i) => InformationListItem(
             information: _recentlyAddedInfo[i],
-            onPressed: () {},
           ),
           separatorBuilder: (_, _) => Padding(
             padding: const EdgeInsetsGeometry.symmetric(

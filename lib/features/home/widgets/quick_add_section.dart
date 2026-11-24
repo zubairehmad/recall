@@ -9,7 +9,7 @@ class QuickAddSection extends StatelessWidget {
   void _handleOnPressed(BuildContext ctx, InformationType type) {
     Navigator.of(ctx).pushNamed(
       InformationFormScreen.routeName,
-      arguments: type,
+      arguments: {'initialType': type},
     );
   }
 

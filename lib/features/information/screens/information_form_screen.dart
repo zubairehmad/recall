@@ -8,10 +8,12 @@ class InformationFormScreen extends StatefulWidget {
   static const routeName = '/add-info-screen';
 
   final InformationType? initialType;
+  final Information? information;
 
   const InformationFormScreen({
     super.key,
     this.initialType,
+    this.information,
   });
 
   @override
@@ -20,6 +22,7 @@ class InformationFormScreen extends StatefulWidget {
 
 class _InformationFormScreenState extends State<InformationFormScreen> {
   late InformationType _selectedType;
+  late bool _isEditing;
 
   final _formKey = GlobalKey<FormState>();
   final _selectedStatus = ValueNotifier(ClaimStatus.unreviewed);
@@ -29,7 +32,21 @@ class _InformationFormScreenState extends State<InformationFormScreen> {
   @override
   void initState() {
     super.initState();
-    _selectedType = widget.initialType ?? InformationType.values[0];
+
+    if (widget.information != null) {
+      final info = widget.information!;
+
+      _selectedType = info.type;
+      if (info.isClaim) {
+        _selectedStatus.value = info.claimStatus!;
+      }
+      _titleController.text = info.title;
+      _contentControler.text = info.content;
+      _isEditing = true;
+    } else {
+      _selectedType = widget.initialType ?? InformationType.values[0];
+      _isEditing = false;
+    }
   }
 
   @override
@@ -46,23 +63,27 @@ class _InformationFormScreenState extends State<InformationFormScreen> {
     final title = _titleController.text.trim();
     final content = _contentControler.text.trim();
 
-    final newInfo = Information(
-      id: const Uuid().v4(),
-      title: title,
-      content: content,
-      type: _selectedType,
-      claimStatus: _selectedType == InformationType.claim
-          ? _selectedStatus.value
-          : null,
-      createdAt: DateTime.now(),
-      updatedAt: DateTime.now(),
-    );
+    if (_isEditing) {
+      debugPrint('An editing is attempted!');
+    } else {
+      final newInfo = Information(
+        id: const Uuid().v4(),
+        title: title,
+        content: content,
+        type: _selectedType,
+        claimStatus: _selectedType == InformationType.claim
+            ? _selectedStatus.value
+            : null,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      );
 
-    debugPrint('Generated UUID (V4): ${newInfo.id}');
-    debugPrint('Info title: $title');
-    debugPrint('Info content: $content');
-    debugPrint('Info type: ${_selectedType.displayName}');
-    debugPrint('Claim status: ${newInfo.claimStatus?.displayName}');
+      debugPrint('Generated UUID (V4): ${newInfo.id}');
+      debugPrint('Info title: $title');
+      debugPrint('Info content: $content');
+      debugPrint('Info type: ${_selectedType.displayName}');
+      debugPrint('Claim status: ${newInfo.claimStatus?.displayName}');
+    }
   }
 
   String? _emptyValidator(String? v) {
@@ -83,8 +104,8 @@ class _InformationFormScreenState extends State<InformationFormScreen> {
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          const CustomSliverAppBar(
-            title: 'Add Information',
+          CustomSliverAppBar(
+            title: _isEditing ? 'Edit Information' : 'Add Information',
             centerTitle: true,
           ),
           SliverToBoxAdapter(
@@ -212,7 +233,9 @@ class _InformationFormScreenState extends State<InformationFormScreen> {
                               ),
                             ),
                           ),
-                          child: const Text('Save information'),
+                          child: _isEditing
+                              ? const Text('Save changes')
+                              : const Text('Save information'),
                         ),
                       ),
                     ),

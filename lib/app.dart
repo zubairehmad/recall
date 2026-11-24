@@ -19,11 +19,15 @@ class MyApp extends StatelessWidget {
       home: const MainNavigationScreen(),
       routes: {
         InformationFormScreen.routeName: (ctx) {
-          final initialType =
-              ModalRoute.of(ctx)?.settings.arguments as InformationType?;
+          final args =
+              ModalRoute.of(ctx)?.settings.arguments as Map<String, dynamic>?;
+
+          final initialType = args?['initialType'] as InformationType?;
+          final information = args?['information'] as Information?;
 
           return InformationFormScreen(
             initialType: initialType,
+            information: information,
           );
         },
       },
