@@ -33,6 +33,19 @@ enum ClaimStatus {
   String get displayName {
     return name[0].toUpperCase() + name.substring(1);
   }
+
+  IconData get icon {
+    switch (this) {
+      case ClaimStatus.unreviewed:
+        return Icons.hourglass_empty;
+      case ClaimStatus.verified:
+        return Icons.verified_outlined;
+      case ClaimStatus.disputed:
+        return Icons.gavel;
+      case ClaimStatus.incorrect:
+        return Icons.cancel_outlined;
+    }
+  }
 }
 
 class Information {

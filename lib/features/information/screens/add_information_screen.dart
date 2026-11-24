@@ -19,9 +19,9 @@ class AddInformationScreen extends StatefulWidget {
 
 class _AddInformationScreenState extends State<AddInformationScreen> {
   late InformationType _selectedType;
-  ClaimStatus _selectedStatus = ClaimStatus.unreviewed;
 
   final _formKey = GlobalKey<FormState>();
+  final _selectedStatus = ValueNotifier(ClaimStatus.unreviewed);
   final _titleController = TextEditingController();
   final _contentControler = TextEditingController();
 
@@ -35,6 +35,7 @@ class _AddInformationScreenState extends State<AddInformationScreen> {
   void dispose() {
     _titleController.dispose();
     _contentControler.dispose();
+    _selectedStatus.dispose();
     super.dispose();
   }
 
@@ -138,24 +139,41 @@ class _AddInformationScreenState extends State<AddInformationScreen> {
                       ),
                     ),
                     if (_selectedType == InformationType.claim) ...[
-                      const Text(
-                        'Claim Status',
-                        style: textStyle,
-                      ),
-                      const SizedBox(height: 8),
-                      Wrap(
-                        spacing: 8,
-                        runSpacing: 8,
-                        children: ClaimStatus.values.map((status) {
-                          return ChoiceChip(
-                            label: Text(status.displayName),
-                            selected: _selectedStatus == status,
-                            onSelected: (_) {
-                              setState(() => _selectedStatus = status);
+                      const SizedBox(height: 16),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            'Claim Status',
+                            style: textStyle,
+                          ),
+                          ValueListenableBuilder<ClaimStatus>(
+                            valueListenable: _selectedStatus,
+                            builder: (context, value, child) {
+                              return DropdownMenu<ClaimStatus>(
+                                initialSelection: ClaimStatus.unreviewed,
+                                selectOnly: true,
+                                leadingIcon: Icon(value.icon),
+                                dropdownMenuEntries: ClaimStatus.values
+                                    .map(
+                                      (status) => DropdownMenuEntry(
+                                        value: status,
+                                        leadingIcon: Icon(status.icon),
+                                        label: status.displayName,
+                                      ),
+                                    )
+                                    .toList(),
+                                onSelected: (newStatus) {
+                                  if (newStatus != null) {
+                                    _selectedStatus.value = newStatus;
+                                  }
+                                },
+                              );
                             },
-                          );
-                        }).toList(),
+                          ),
+                        ],
                       ),
+                      const SizedBox(height: 10),
                     ],
                     const SizedBox(height: 16),
                     SizedBox(
