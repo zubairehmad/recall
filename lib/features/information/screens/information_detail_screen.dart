@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../core/models/information.dart';
 import '../../../core/widgets/custom_sliver_app_bar.dart';
 import '../../../core/utils/date_formatter.dart';
+import '../widgets/confirmation_dialog.dart';
 import 'information_form_screen.dart';
 
 class InformationDetailScreen extends StatelessWidget {
@@ -14,6 +15,7 @@ class InformationDetailScreen extends StatelessWidget {
     super.key,
     required this.information,
   });
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -26,19 +28,25 @@ class InformationDetailScreen extends StatelessWidget {
             title: 'Information Details',
             actions: [
               IconButton(
-                onPressed: () {
-                  Navigator.of(context).pushNamed(
-                    InformationFormScreen.routeName,
-                    arguments: {
-                      'information': information,
-                    },
-                  );
-                },
+                onPressed: () => Navigator.of(context).pushNamed(
+                  InformationFormScreen.routeName,
+                  arguments: {
+                    'information': information,
+                  },
+                ),
                 icon: const Icon(Icons.edit_outlined),
               ),
               IconButton(
-                onPressed: () {
-                  // ask for confirmation
+                onPressed: () async {
+                  final shouldDelete = await showConfirmationDialog(
+                    context: context,
+                    bodyText:
+                        'Are you sure you want to perform this operation?\nThis operation cannot be undone.',
+                  );
+
+                  if (shouldDelete) {
+                    // perform delete operation
+                  }
                 },
                 icon: const Icon(
                   Icons.delete_outline,

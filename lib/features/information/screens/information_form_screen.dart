@@ -3,6 +3,7 @@ import 'package:uuid/uuid.dart';
 
 import '../../../core/models/information.dart';
 import '../../../core/widgets/custom_sliver_app_bar.dart';
+import '../widgets/confirmation_dialog.dart';
 
 class InformationFormScreen extends StatefulWidget {
   static const routeName = '/add-info-screen';
@@ -74,13 +75,24 @@ class _InformationFormScreenState extends State<InformationFormScreen> {
             _selectedStatus.value != info.claimStatus);
   }
 
-  void _onSubmit() {
+  Future<void> _onSubmit() async {
     if (!(_formKey.currentState?.validate() ?? false)) return;
 
     final title = _titleController.text.trim();
     final content = _contentControler.text.trim();
 
     if (_isEditing) {
+      if (_selectedType != widget.information!.type) {
+        final shouldProceed = await showConfirmationDialog(
+          context: context,
+          bodyText:
+              'You have updated information type from ${widget.information!.type.displayName} '
+              'to ${_selectedType.displayName}. Are you still sure you want to save these changes?',
+        );
+
+        if (!shouldProceed) return;
+      }
+
       debugPrint('An editing is attempted!');
     } else {
       final newInfo = Information(
