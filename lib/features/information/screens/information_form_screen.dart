@@ -57,6 +57,23 @@ class _InformationFormScreenState extends State<InformationFormScreen> {
     super.dispose();
   }
 
+  bool get _canSubmit {
+    final title = _titleController.text.trim();
+    final content = _contentControler.text.trim();
+
+    if (title.isEmpty || content.isEmpty) return false;
+
+    if (!_isEditing) return true;
+
+    final info = widget.information!;
+
+    return title != info.title ||
+        content != info.content ||
+        _selectedType != info.type ||
+        (_selectedType == InformationType.claim &&
+            _selectedStatus.value != info.claimStatus);
+  }
+
   void _onSubmit() {
     if (!(_formKey.currentState?.validate() ?? false)) return;
 
@@ -224,18 +241,27 @@ class _InformationFormScreenState extends State<InformationFormScreen> {
                       width: double.infinity,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8),
-                        child: ElevatedButton(
-                          onPressed: _onSubmit,
-                          style: ElevatedButton.styleFrom(
-                            shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(12),
+                        child: AnimatedBuilder(
+                          animation: Listenable.merge([
+                            _titleController,
+                            _contentControler,
+                            _selectedStatus,
+                          ]),
+                          builder: (context, child) {
+                            return ElevatedButton(
+                              onPressed: _canSubmit ? _onSubmit : null,
+                              style: ElevatedButton.styleFrom(
+                                shape: const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(12),
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
-                          child: _isEditing
-                              ? const Text('Save changes')
-                              : const Text('Save information'),
+                              child: _isEditing
+                                  ? const Text('Save changes')
+                                  : const Text('Save information'),
+                            );
+                          },
                         ),
                       ),
                     ),
