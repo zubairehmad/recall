@@ -4,21 +4,21 @@ import 'package:uuid/uuid.dart';
 import '../../../core/models/information.dart';
 import '../../../core/widgets/custom_sliver_app_bar.dart';
 
-class AddInformationScreen extends StatefulWidget {
+class InformationFormScreen extends StatefulWidget {
   static const routeName = '/add-info-screen';
 
   final InformationType? initialType;
 
-  const AddInformationScreen({
+  const InformationFormScreen({
     super.key,
     this.initialType,
   });
 
   @override
-  State<AddInformationScreen> createState() => _AddInformationScreenState();
+  State<InformationFormScreen> createState() => _InformationFormScreenState();
 }
 
-class _AddInformationScreenState extends State<AddInformationScreen> {
+class _InformationFormScreenState extends State<InformationFormScreen> {
   late InformationType _selectedType;
 
   final _formKey = GlobalKey<FormState>();
