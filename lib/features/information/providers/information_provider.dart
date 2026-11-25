@@ -62,4 +62,30 @@ class InformationProvider with ChangeNotifier {
         .take(5)
         .toList();
   }
+
+  void addInformation(Information info) {
+    if (_information.any((item) => item.id == info.id)) return;
+
+    _information.add(info);
+    notifyListeners();
+  }
+
+  void updateInformation(Information updatedInfo) {
+    final idx = _information.indexWhere(
+      (info) => info.id == updatedInfo.id,
+    );
+    if (idx == -1) return;
+
+    _information[idx] = updatedInfo;
+    notifyListeners();
+  }
+
+  void deleteInformation(String id) {
+    final prevLen = _information.length;
+    _information.removeWhere((info) => info.id == id);
+
+    if (_information.length != prevLen) {
+      notifyListeners();
+    }
+  }
 }
