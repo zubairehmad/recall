@@ -37,19 +37,20 @@ class _InformationFormScreenState extends State<InformationFormScreen> {
   void initState() {
     super.initState();
 
+    _initialValue = widget.information?.claimStatus ?? ClaimStatus.unreviewed;
+
     if (widget.information != null) {
       final info = widget.information!;
 
       _selectedType = info.type;
       if (info.isClaim) {
-        _initialValue = _selectedStatus.value = info.claimStatus!;
+        _selectedStatus.value = info.claimStatus!;
       }
       _titleController.text = info.title;
       _contentControler.text = info.content;
       _isEditing = true;
     } else {
       _selectedType = widget.initialType ?? InformationType.values[0];
-      _initialValue = _selectedStatus.value;
       _isEditing = false;
     }
   }
@@ -110,11 +111,13 @@ class _InformationFormScreenState extends State<InformationFormScreen> {
       );
 
       if (infoProvider.updateInformation(upd) && mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Saved changes successfully!'),
-          ),
-        );
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(
+            const SnackBar(
+              content: Text('Saved changes successfully!'),
+            ),
+          );
       }
     } else {
       final newInfo = Information(
@@ -130,11 +133,13 @@ class _InformationFormScreenState extends State<InformationFormScreen> {
       );
 
       if (infoProvider.addInformation(newInfo)) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('${_selectedType.displayName} added successfully!'),
-          ),
-        );
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(
+            SnackBar(
+              content: Text('${_selectedType.displayName} added successfully!'),
+            ),
+          );
       }
     }
 
