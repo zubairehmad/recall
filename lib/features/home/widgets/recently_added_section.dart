@@ -1,41 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-import '../../../core/models/information.dart';
+import '../../information/providers/information_provider.dart';
 import '../../information/widgets/information_list_item.dart';
-
-/// mock data
-final _recentlyAddedInfo = [
-  Information(
-    id: '1',
-    title: 'Binary search on answer',
-    content: 'You should binary search on answer!',
-    type: InformationType.tip,
-    createdAt: DateTime.now().subtract(const Duration(hours: 2)),
-    updatedAt: DateTime.now().subtract(const Duration(hours: 2)),
-  ),
-  Information(
-    id: '2',
-    title: "Newton's third law",
-    content: 'Every action has a reaction.',
-    type: InformationType.fact,
-    createdAt: DateTime.now().subtract(const Duration(days: 1)),
-    updatedAt: DateTime.now().subtract(const Duration(days: 1)),
-  ),
-  Information(
-    id: '3',
-    title: 'Thought about discipline',
-    content: 'I should be disciplined!',
-    type: InformationType.note,
-    createdAt: DateTime.now().subtract(const Duration(days: 2)),
-    updatedAt: DateTime.now().subtract(const Duration(days: 2)),
-  ),
-];
 
 class RecentlyAddedSection extends StatelessWidget {
   const RecentlyAddedSection({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final recentlyAdded = context
+        .watch<InformationProvider>()
+        .recentlyAddedList;
+
     return SliverMainAxisGroup(
       slivers: [
         SliverToBoxAdapter(
@@ -63,7 +40,7 @@ class RecentlyAddedSection extends StatelessWidget {
         ),
         SliverList.separated(
           itemBuilder: (_, i) => InformationListItem(
-            information: _recentlyAddedInfo[i],
+            information: recentlyAdded[i],
           ),
           separatorBuilder: (_, _) => Padding(
             padding: const EdgeInsetsGeometry.symmetric(
@@ -75,7 +52,7 @@ class RecentlyAddedSection extends StatelessWidget {
               color: Theme.of(context).colorScheme.onSurface.withAlpha(100),
             ),
           ),
-          itemCount: _recentlyAddedInfo.length,
+          itemCount: recentlyAdded.length,
         ),
       ],
     );

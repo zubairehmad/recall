@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../core/models/information.dart';
+import '../../information/models/information.dart';
 import '../../information/screens/information_form_screen.dart';
 
 class QuickAddSection extends StatelessWidget {

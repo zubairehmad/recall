@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
-import '../../../core/models/information.dart';
-import '../../../core/widgets/custom_sliver_app_bar.dart';
+import '../models/information.dart';
+import '../providers/information_provider.dart';
 import '../widgets/confirmation_dialog.dart';
+import '../../../core/widgets/custom_sliver_app_bar.dart';
 
 class InformationFormScreen extends StatefulWidget {
   static const routeName = '/add-info-screen';
@@ -27,12 +29,15 @@ class _InformationFormScreenState extends State<InformationFormScreen> {
 
   final _formKey = GlobalKey<FormState>();
   final _selectedStatus = ValueNotifier(ClaimStatus.unreviewed);
+  late final ClaimStatus _initialValue;
   final _titleController = TextEditingController();
   final _contentControler = TextEditingController();
 
   @override
   void initState() {
     super.initState();
+
+    _initialValue = widget.information?.claimStatus ?? ClaimStatus.unreviewed;
 
     if (widget.information != null) {
       final info = widget.information!;
@@ -80,6 +85,8 @@ class _InformationFormScreenState extends State<InformationFormScreen> {
 
     final title = _titleController.text.trim();
     final content = _contentControler.text.trim();
+    final now = DateTime.now();
+    final infoProvider = context.read<InformationProvider>();
 
     if (_isEditing) {
       if (_selectedType != widget.information!.type) {
@@ -93,7 +100,25 @@ class _InformationFormScreenState extends State<InformationFormScreen> {
         if (!shouldProceed) return;
       }
 
-      debugPrint('An editing is attempted!');
+      final upd = widget.information!.copyWith(
+        title: title,
+        content: content,
+        type: _selectedType,
+        claimStatus: _selectedType == InformationType.claim
+            ? _selectedStatus.value
+            : null,
+        updatedAt: now,
+      );
+
+      if (infoProvider.updateInformation(upd) && mounted) {
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(
+            const SnackBar(
+              content: Text('Saved changes successfully!'),
+            ),
+          );
+      }
     } else {
       final newInfo = Information(
         id: const Uuid().v4(),
@@ -103,15 +128,23 @@ class _InformationFormScreenState extends State<InformationFormScreen> {
         claimStatus: _selectedType == InformationType.claim
             ? _selectedStatus.value
             : null,
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
+        createdAt: now,
+        updatedAt: now,
       );
 
-      debugPrint('Generated UUID (V4): ${newInfo.id}');
-      debugPrint('Info title: $title');
-      debugPrint('Info content: $content');
-      debugPrint('Info type: ${_selectedType.displayName}');
-      debugPrint('Claim status: ${newInfo.claimStatus?.displayName}');
+      if (infoProvider.addInformation(newInfo)) {
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(
+            SnackBar(
+              content: Text('${_selectedType.displayName} added successfully!'),
+            ),
+          );
+      }
+    }
+
+    if (mounted) {
+      Navigator.of(context).pop();
     }
   }
 
@@ -225,7 +258,7 @@ class _InformationFormScreenState extends State<InformationFormScreen> {
                               final brightness = Theme.of(context).brightness;
 
                               return DropdownMenu<ClaimStatus>(
-                                initialSelection: ClaimStatus.unreviewed,
+                                initialSelection: _initialValue,
                                 selectOnly: true,
                                 leadingIcon: Icon(
                                   value.icon,
