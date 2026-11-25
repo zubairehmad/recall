@@ -4,7 +4,12 @@ import '../../../core/widgets/custom_search_bar.dart';
 import '../models/information.dart';
 
 class SearchAndFilterSection extends StatefulWidget {
-  const SearchAndFilterSection({super.key});
+  final bool disable;
+
+  const SearchAndFilterSection({
+    super.key,
+    this.disable = false,
+  });
 
   @override
   State<SearchAndFilterSection> createState() => _SearchAndFilterSectionState();
@@ -31,8 +36,8 @@ class _SearchAndFilterSectionState extends State<SearchAndFilterSection> {
       ),
       constraints: const BoxConstraints(maxWidth: 600),
       builder: (ctx) {
-        return const Padding(
-          padding: EdgeInsets.only(
+        return Padding(
+          padding: const EdgeInsets.only(
             left: 16,
             right: 16,
             bottom: 24,
@@ -50,9 +55,10 @@ class _SearchAndFilterSectionState extends State<SearchAndFilterSection> {
         SliverToBoxAdapter(
           child: CustomSearchBar(
             hintText: 'Search your collection...',
+            disable: widget.disable,
             trailing: [
               IconButton(
-                onPressed: _handleFilterOptions,
+                onPressed: widget.disable ? null : _handleFilterOptions,
                 icon: const Icon(Icons.tune),
               ),
             ],
@@ -68,6 +74,7 @@ class _SearchAndFilterSectionState extends State<SearchAndFilterSection> {
               _TypeFilterChip(
                 label: const Text('All'),
                 selected: _selectedType == null,
+                disable: widget.disable,
                 onSelected: () => _setSelectedType(null),
               ),
               for (int i = 0; i < 4; ++i) ...[
@@ -76,6 +83,7 @@ class _SearchAndFilterSectionState extends State<SearchAndFilterSection> {
                     '${InformationType.values[i].name[0].toUpperCase()}${InformationType.values[i].name.substring(1)}s',
                   ),
                   selected: _selectedType == InformationType.values[i],
+                  disable: widget.disable,
                   onSelected: () => _setSelectedType(InformationType.values[i]),
                 ),
               ],
@@ -228,6 +236,7 @@ class _FilterOptionSheetWidgetState extends State<FilterOptionSheetWidget> {
 class _TypeFilterChip extends StatelessWidget {
   final Widget label;
   final bool selected;
+  final bool disable;
   final VoidCallback onSelected;
   final VoidCallback? onUnselected;
 
@@ -236,24 +245,33 @@ class _TypeFilterChip extends StatelessWidget {
     required this.selected,
     required this.onSelected,
     this.onUnselected,
+    this.disable = false,
   });
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Card(
-      color: selected
-          ? Theme.of(context).brightness == Brightness.dark
+      color: disable
+          ? theme.disabledColor
+          : selected
+          ? theme.brightness == Brightness.dark
                 ? Colors.blueGrey
                 : Colors.blueGrey.shade100
           : null,
-      shape: selected
+      shape: selected || disable
           ? const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(12)),
             )
           : null,
       clipBehavior: Clip.antiAlias,
       child: InkWell(
-        onTap: selected ? onUnselected : onSelected,
+        onTap: disable
+            ? null
+            : selected
+            ? onUnselected
+            : onSelected,
         child: Padding(
           padding: const EdgeInsetsGeometry.symmetric(
             horizontal: 12,

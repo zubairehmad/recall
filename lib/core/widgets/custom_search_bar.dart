@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 
 class CustomSearchBar extends StatefulWidget {
   final String hintText;
+  final bool disable;
   final List<Widget>? trailing;
 
   const CustomSearchBar({
     super.key,
     required this.hintText,
     this.trailing,
+    this.disable = false,
   });
 
   @override
@@ -27,6 +29,7 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
           color: color,
         ),
       ),
+      enabled: !widget.disable,
       trailing: widget.trailing,
       hintText: widget.hintText,
       hintStyle: WidgetStateProperty.all(
