@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/models/information.dart';
-import '../../../core/widgets/custom_sliver_app_bar.dart';
 import '../../../core/utils/date_formatter.dart';
+import '../../../core/widgets/custom_sliver_app_bar.dart';
 import '../widgets/confirmation_dialog.dart';
 import 'information_form_screen.dart';
 
@@ -18,9 +18,6 @@ class InformationDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    const padding = 16.0;
-
     return Scaffold(
       body: CustomScrollView(
         slivers: [
@@ -57,52 +54,11 @@ class InformationDetailScreen extends StatelessWidget {
             ],
           ),
           SliverPadding(
-            padding: const EdgeInsets.all(padding),
-            sliver: SliverList(
-              delegate: SliverChildListDelegate([
-                Row(
-                  children: [
-                    Chip(
-                      avatar: Icon(information.type.icon, size: 18),
-                      label: Text(information.type.displayName),
-                    ),
-                    if (information.claimStatus != null) ...[
-                      const SizedBox(width: 8),
-                      _ClaimStatusCard(
-                        status: information.claimStatus!,
-                      ),
-                    ],
-                  ],
-                ),
-                const SizedBox(height: 20),
-                Text(
-                  information.title,
-                  style: theme.textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 24),
-                Text(
-                  information.content,
-                  style: theme.textTheme.bodyLarge?.copyWith(
-                    height: 1.6,
-                  ),
-                ),
-                const SizedBox(height: 32),
-                const Divider(),
-                const SizedBox(height: 12),
-                _MetadataRow(
-                  label: 'Created',
-                  value: DateFormatter.formatDate(information.createdAt),
-                ),
-                const SizedBox(height: 12),
-                _MetadataRow(
-                  label: 'Last edited',
-                  value: information.createdAt == information.updatedAt
-                      ? "Never"
-                      : DateFormatter.formatDate(information.createdAt),
-                ),
-              ]),
+            padding: const EdgeInsets.all(16),
+            sliver: SliverToBoxAdapter(
+              child: _InformationCard(
+                information: information,
+              ),
             ),
           ),
         ],
@@ -111,8 +67,110 @@ class InformationDetailScreen extends StatelessWidget {
   }
 }
 
+class _InformationCard extends StatelessWidget {
+  final Information information;
+
+  const _InformationCard({
+    required this.information,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: colorScheme.surfaceContainerLow,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: colorScheme.outlineVariant,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              _InformationTypeBadge(
+                type: information.type,
+              ),
+              if (information.isClaim)
+                _ClaimStatusCard(
+                  status: information.claimStatus!,
+                ),
+            ],
+          ),
+          const SizedBox(height: 20),
+          Text(
+            information.title,
+            style: theme.textTheme.headlineSmall?.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            information.content,
+            style: theme.textTheme.bodyLarge?.copyWith(
+              height: 1.6,
+            ),
+          ),
+          const SizedBox(height: 24),
+          Divider(
+            color: colorScheme.outlineVariant,
+          ),
+          const SizedBox(height: 12),
+          Wrap(
+            spacing: 20,
+            runSpacing: 8,
+            children: [
+              _MetadataItem(
+                icon: Icons.calendar_today_outlined,
+                value: DateFormatter.formatDate(
+                  information.createdAt,
+                ),
+              ),
+              _MetadataItem(
+                icon: Icons.edit_calendar_outlined,
+                value: information.createdAt == information.updatedAt
+                    ? 'Never edited'
+                    : DateFormatter.formatDate(
+                        information.updatedAt,
+                      ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _InformationTypeBadge extends StatelessWidget {
+  final InformationType type;
+
+  const _InformationTypeBadge({
+    required this.type,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Chip(
+      avatar: Icon(
+        type.icon,
+        size: 18,
+      ),
+      label: Text(type.displayName),
+    );
+  }
+}
+
 class _ClaimStatusCard extends StatelessWidget {
   final ClaimStatus status;
+
   const _ClaimStatusCard({
     required this.status,
   });
@@ -124,58 +182,64 @@ class _ClaimStatusCard extends StatelessWidget {
     final foregroundColor = status.getForegroundColor(brightness);
     final backgroundColor = status.getBackgroundColor(brightness);
 
-    return Card(
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadiusGeometry.all(Radius.circular(12)),
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 12,
+        vertical: 8,
       ),
-      color: backgroundColor,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 8,
-        ),
-        child: Row(
-          children: [
-            Icon(
-              status.icon,
-              size: 18,
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: const BorderRadius.all(Radius.circular(8)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            status.icon,
+            size: 18,
+            color: foregroundColor,
+          ),
+          const SizedBox(width: 6),
+          Text(
+            status.displayName,
+            style: TextStyle(
               color: foregroundColor,
             ),
-            const SizedBox(width: 4),
-            Text(
-              status.displayName,
-              style: TextStyle(
-                color: foregroundColor,
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 }
 
-class _MetadataRow extends StatelessWidget {
-  final String label;
+class _MetadataItem extends StatelessWidget {
+  final IconData icon;
   final String value;
 
-  const _MetadataRow({
-    required this.label,
+  const _MetadataItem({
+    required this.icon,
     required this.value,
   });
 
   @override
   Widget build(BuildContext context) {
+    final color = Theme.of(context).colorScheme.onSurfaceVariant;
+
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisSize: MainAxisSize.min,
       children: [
+        Icon(
+          icon,
+          size: 14,
+          color: color,
+        ),
+        const SizedBox(width: 6),
         Text(
-          label,
-          style: TextStyle(
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          value,
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            color: color,
           ),
         ),
-        Text(value),
       ],
     );
   }
