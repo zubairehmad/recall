@@ -20,8 +20,8 @@ class InformationDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final information = context.select<InformationProvider, Information>(
-      (p) => p.getInfo(infoId)!,
+    final information = context.select<InformationProvider, Information?>(
+      (p) => p.getInfo(infoId),
     );
 
     return Scaffold(
@@ -31,26 +31,41 @@ class InformationDetailScreen extends StatelessWidget {
             title: 'Information Details',
             actions: [
               IconButton(
-                onPressed: () => Navigator.of(context).pushNamed(
-                  InformationFormScreen.routeName,
-                  arguments: {
-                    'information': information,
-                  },
-                ),
+                onPressed: information == null
+                    ? null
+                    : () => Navigator.of(context).pushNamed(
+                        InformationFormScreen.routeName,
+                        arguments: {
+                          'information': information,
+                        },
+                      ),
                 icon: const Icon(Icons.edit_outlined),
               ),
               IconButton(
-                onPressed: () async {
-                  final shouldDelete = await showConfirmationDialog(
-                    context: context,
-                    bodyText:
-                        'Are you sure you want to perform this operation?\nThis operation cannot be undone.',
-                  );
+                onPressed: information == null
+                    ? null
+                    : () async {
+                        final infoProvider = context
+                            .read<InformationProvider>();
+                        final shouldDelete = await showConfirmationDialog(
+                          context: context,
+                          bodyText:
+                              'Are you sure you want to perform this operation?\nThis operation cannot be undone.',
+                        );
 
-                  if (shouldDelete) {
-                    // perform delete operation
-                  }
-                },
+                        if (shouldDelete &&
+                            infoProvider.deleteInformation(information.id) &&
+                            context.mounted) {
+                          ScaffoldMessenger.of(context)
+                            ..hideCurrentSnackBar()
+                            ..showSnackBar(
+                              const SnackBar(
+                                content: Text('Deleted successfully!'),
+                              ),
+                            );
+                          Navigator.of(context).pop();
+                        }
+                      },
                 icon: const Icon(
                   Icons.delete_outline,
                   color: Colors.red,
@@ -74,7 +89,7 @@ class InformationDetailScreen extends StatelessWidget {
 }
 
 class _InformationCard extends StatelessWidget {
-  final Information information;
+  final Information? information;
 
   const _InformationCard({
     required this.information,
@@ -84,6 +99,10 @@ class _InformationCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+
+    if (information == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
 
     return Container(
       padding: const EdgeInsets.all(20),
@@ -102,24 +121,24 @@ class _InformationCard extends StatelessWidget {
             runSpacing: 8,
             children: [
               _InformationTypeBadge(
-                type: information.type,
+                type: information!.type,
               ),
-              if (information.isClaim)
+              if (information!.isClaim)
                 _ClaimStatusCard(
-                  status: information.claimStatus!,
+                  status: information!.claimStatus!,
                 ),
             ],
           ),
           const SizedBox(height: 20),
           Text(
-            information.title,
+            information!.title,
             style: theme.textTheme.headlineSmall?.copyWith(
               fontWeight: FontWeight.bold,
             ),
           ),
           const SizedBox(height: 16),
           Text(
-            information.content,
+            information!.content,
             style: theme.textTheme.bodyLarge?.copyWith(
               height: 1.6,
             ),
@@ -136,15 +155,15 @@ class _InformationCard extends StatelessWidget {
               _MetadataItem(
                 icon: Icons.calendar_today_outlined,
                 value: DateFormatter.formatDate(
-                  information.createdAt,
+                  information!.createdAt,
                 ),
               ),
               _MetadataItem(
                 icon: Icons.edit_calendar_outlined,
-                value: information.createdAt == information.updatedAt
+                value: information!.createdAt == information!.updatedAt
                     ? 'Never edited'
                     : DateFormatter.formatDate(
-                        information.updatedAt,
+                        information!.updatedAt,
                       ),
               ),
             ],
