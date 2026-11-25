@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-import 'core/models/information.dart';
 import 'core/theme/app_theme.dart';
 import 'features/navigation/screens/main_navigation_screen.dart';
+import 'features/information/models/information.dart';
+import 'features/information/providers/information_provider.dart';
 import 'features/information/screens/information_form_screen.dart';
 import 'features/information/screens/information_detail_screen.dart';
 
@@ -11,32 +13,35 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Recall',
-      theme: AppTheme.lightTheme,
-      darkTheme: AppTheme.darkTheme,
-      themeMode: ThemeMode.system,
-      debugShowCheckedModeBanner: false,
-      home: const MainNavigationScreen(),
-      routes: {
-        InformationFormScreen.routeName: (ctx) {
-          final args =
-              ModalRoute.of(ctx)?.settings.arguments as Map<String, dynamic>?;
+    return ChangeNotifierProvider(
+      create: (_) => InformationProvider(),
+      child: MaterialApp(
+        title: 'Recall',
+        theme: AppTheme.lightTheme,
+        darkTheme: AppTheme.darkTheme,
+        themeMode: ThemeMode.system,
+        debugShowCheckedModeBanner: false,
+        home: const MainNavigationScreen(),
+        routes: {
+          InformationFormScreen.routeName: (ctx) {
+            final args =
+                ModalRoute.of(ctx)?.settings.arguments as Map<String, dynamic>?;
 
-          final initialType = args?['initialType'] as InformationType?;
-          final information = args?['information'] as Information?;
+            final initialType = args?['initialType'] as InformationType?;
+            final information = args?['information'] as Information?;
 
-          return InformationFormScreen(
-            initialType: initialType,
-            information: information,
-          );
+            return InformationFormScreen(
+              initialType: initialType,
+              information: information,
+            );
+          },
+          InformationDetailScreen.routeName: (ctx) {
+            final info = ModalRoute.of(ctx)?.settings.arguments as Information;
+
+            return InformationDetailScreen(information: info);
+          },
         },
-        InformationDetailScreen.routeName: (ctx) {
-          final info = ModalRoute.of(ctx)?.settings.arguments as Information;
-
-          return InformationDetailScreen(information: info);
-        },
-      },
+      ),
     );
   }
 }

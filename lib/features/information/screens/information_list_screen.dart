@@ -1,62 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-import '../../../core/models/information.dart';
-import '../../../core/widgets/custom_sliver_app_bar.dart';
+import 'information_form_screen.dart';
+import '../providers/information_provider.dart';
 import '../widgets/search_and_section.dart';
 import '../widgets/information_list_item.dart';
-import 'information_form_screen.dart';
-
-/// mock data
-final _infoList = [
-  Information(
-    id: '1',
-    title: 'Binary search on answer',
-    content: 'You should binary search on answer!',
-    type: InformationType.tip,
-    createdAt: DateTime.now().subtract(const Duration(hours: 2)),
-    updatedAt: DateTime.now().subtract(const Duration(hours: 2)),
-  ),
-  Information(
-    id: '2',
-    title: "Newton's third law",
-    content: 'Every action has a reaction.',
-    type: InformationType.fact,
-    createdAt: DateTime.now().subtract(const Duration(days: 1)),
-    updatedAt: DateTime.now().subtract(const Duration(days: 1)),
-  ),
-  Information(
-    id: '3',
-    title: 'Thought about discipline',
-    content: 'I should be disciplined!',
-    type: InformationType.note,
-    createdAt: DateTime.now().subtract(const Duration(days: 2)),
-    updatedAt: DateTime.now().subtract(const Duration(days: 2)),
-  ),
-  Information(
-    id: '4',
-    title: "Pakistan's independence date",
-    content: '14th August, 1947',
-    type: InformationType.fact,
-    createdAt: DateTime.now().subtract(const Duration(days: 7)),
-    updatedAt: DateTime.now().subtract(const Duration(days: 7)),
-  ),
-  Information(
-    id: '5',
-    title: "World War 2 was consipiracy!",
-    content: 'I dont know!!',
-    type: InformationType.claim,
-    claimStatus: ClaimStatus.unreviewed,
-    createdAt: DateTime.now().subtract(const Duration(days: 23)),
-    updatedAt: DateTime.now().subtract(const Duration(days: 23)),
-  ),
-];
+import '../../../core/widgets/custom_sliver_app_bar.dart';
 
 class InformationListScreen extends StatelessWidget {
   const InformationListScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    const EdgeInsetsGeometry padding = EdgeInsets.symmetric(
+    final infoList = context.watch<InformationProvider>().informationList;
+
+    const padding = EdgeInsets.symmetric(
       horizontal: 12,
       vertical: 10,
     );
@@ -70,9 +28,9 @@ class InformationListScreen extends StatelessWidget {
               Padding(
                 padding: const EdgeInsetsGeometry.only(right: 8),
                 child: IconButton(
-                  onPressed: () => Navigator.of(
-                    context,
-                  ).pushNamed(InformationFormScreen.routeName),
+                  onPressed: () => Navigator.of(context).pushNamed(
+                    InformationFormScreen.routeName,
+                  ),
                   icon: const Icon(Icons.add),
                 ),
               ),
@@ -89,7 +47,7 @@ class InformationListScreen extends StatelessWidget {
             padding: padding,
             sliver: SliverList.separated(
               itemBuilder: (_, i) => InformationListItem(
-                information: _infoList[i],
+                information: infoList[i],
               ),
               separatorBuilder: (_, _) => Padding(
                 padding: const EdgeInsetsGeometry.symmetric(
@@ -101,7 +59,7 @@ class InformationListScreen extends StatelessWidget {
                   color: Theme.of(context).colorScheme.onSurface.withAlpha(100),
                 ),
               ),
-              itemCount: _infoList.length,
+              itemCount: infoList.length,
             ),
           ),
         ],

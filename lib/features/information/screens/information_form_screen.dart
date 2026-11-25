@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
-import '../../../core/models/information.dart';
 import '../../../core/widgets/custom_sliver_app_bar.dart';
+import '../models/information.dart';
 import '../widgets/confirmation_dialog.dart';
 
 class InformationFormScreen extends StatefulWidget {

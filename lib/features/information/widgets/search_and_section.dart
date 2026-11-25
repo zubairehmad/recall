@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../core/models/information.dart';
 import '../../../core/widgets/custom_search_bar.dart';
+import '../models/information.dart';
 
 class SearchAndFilterSection extends StatefulWidget {
   const SearchAndFilterSection({super.key});

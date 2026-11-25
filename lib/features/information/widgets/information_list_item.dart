@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../models/information.dart';
 import '../screens/information_detail_screen.dart';
-import '../../../core/models/information.dart';
 
 class InformationListItem extends StatelessWidget {
   final Information information;

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../../core/models/information.dart';
 import '../../../core/utils/date_formatter.dart';
 import '../../../core/widgets/custom_sliver_app_bar.dart';
+import '../models/information.dart';
 import '../widgets/confirmation_dialog.dart';
 import 'information_form_screen.dart';
 
