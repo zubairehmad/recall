@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'core/models/information.dart';
 import 'core/theme/app_theme.dart';
 import 'features/navigation/screens/main_navigation_screen.dart';
-import 'features/information/screens/add_information_screen.dart';
+import 'features/information/screens/information_form_screen.dart';
+import 'features/information/screens/information_detail_screen.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -18,13 +19,22 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: const MainNavigationScreen(),
       routes: {
-        AddInformationScreen.routeName: (ctx) {
-          final initialType =
-              ModalRoute.of(ctx)?.settings.arguments as InformationType?;
+        InformationFormScreen.routeName: (ctx) {
+          final args =
+              ModalRoute.of(ctx)?.settings.arguments as Map<String, dynamic>?;
 
-          return AddInformationScreen(
+          final initialType = args?['initialType'] as InformationType?;
+          final information = args?['information'] as Information?;
+
+          return InformationFormScreen(
             initialType: initialType,
+            information: information,
           );
+        },
+        InformationDetailScreen.routeName: (ctx) {
+          final info = ModalRoute.of(ctx)?.settings.arguments as Information;
+
+          return InformationDetailScreen(information: info);
         },
       },
     );

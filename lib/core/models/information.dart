@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart' show Icons, IconData;
+import 'package:flutter/material.dart';
 
 enum InformationType {
   claim,
@@ -32,6 +32,36 @@ enum ClaimStatus {
 
   String get displayName {
     return name[0].toUpperCase() + name.substring(1);
+  }
+
+  Color getBackgroundColor(Brightness brightness) {
+    final isDark = brightness == Brightness.dark;
+
+    switch (this) {
+      case ClaimStatus.unreviewed:
+        return isDark ? const Color(0xFF374151) : const Color(0xFFF3F4F6);
+      case ClaimStatus.verified:
+        return isDark ? const Color(0xFF14532D) : const Color(0xFFDCFCE7);
+      case ClaimStatus.disputed:
+        return isDark ? const Color(0xFF713F12) : const Color(0xFFFEF3C7);
+      case ClaimStatus.incorrect:
+        return isDark ? const Color(0xFF7F1D1D) : const Color(0xFFFEE2E2);
+    }
+  }
+
+  Color getForegroundColor(Brightness brightness) {
+    final isDark = brightness == Brightness.dark;
+
+    switch (this) {
+      case ClaimStatus.unreviewed:
+        return isDark ? const Color(0xFFD1D5DB) : const Color(0xFF374151);
+      case ClaimStatus.verified:
+        return isDark ? const Color(0xFF86EFAC) : const Color(0xFF166534);
+      case ClaimStatus.disputed:
+        return isDark ? const Color(0xFFFDE68A) : const Color(0xFF92400E);
+      case ClaimStatus.incorrect:
+        return isDark ? const Color(0xFFFCA5A5) : const Color(0xFF991B1B);
+    }
   }
 
   IconData get icon {

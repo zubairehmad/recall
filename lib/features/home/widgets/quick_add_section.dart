@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/models/information.dart';
-import '../../information/screens/add_information_screen.dart';
+import '../../information/screens/information_form_screen.dart';
 
 class QuickAddSection extends StatelessWidget {
   const QuickAddSection({super.key});
 
   void _handleOnPressed(BuildContext ctx, InformationType type) {
     Navigator.of(ctx).pushNamed(
-      AddInformationScreen.routeName,
-      arguments: type,
+      InformationFormScreen.routeName,
+      arguments: {'initialType': type},
     );
   }
 

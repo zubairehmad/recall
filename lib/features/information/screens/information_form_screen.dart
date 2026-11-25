@@ -3,23 +3,27 @@ import 'package:uuid/uuid.dart';
 
 import '../../../core/models/information.dart';
 import '../../../core/widgets/custom_sliver_app_bar.dart';
+import '../widgets/confirmation_dialog.dart';
 
-class AddInformationScreen extends StatefulWidget {
+class InformationFormScreen extends StatefulWidget {
   static const routeName = '/add-info-screen';
 
   final InformationType? initialType;
+  final Information? information;
 
-  const AddInformationScreen({
+  const InformationFormScreen({
     super.key,
     this.initialType,
+    this.information,
   });
 
   @override
-  State<AddInformationScreen> createState() => _AddInformationScreenState();
+  State<InformationFormScreen> createState() => _InformationFormScreenState();
 }
 
-class _AddInformationScreenState extends State<AddInformationScreen> {
+class _InformationFormScreenState extends State<InformationFormScreen> {
   late InformationType _selectedType;
+  late bool _isEditing;
 
   final _formKey = GlobalKey<FormState>();
   final _selectedStatus = ValueNotifier(ClaimStatus.unreviewed);
@@ -29,7 +33,21 @@ class _AddInformationScreenState extends State<AddInformationScreen> {
   @override
   void initState() {
     super.initState();
-    _selectedType = widget.initialType ?? InformationType.values[0];
+
+    if (widget.information != null) {
+      final info = widget.information!;
+
+      _selectedType = info.type;
+      if (info.isClaim) {
+        _selectedStatus.value = info.claimStatus!;
+      }
+      _titleController.text = info.title;
+      _contentControler.text = info.content;
+      _isEditing = true;
+    } else {
+      _selectedType = widget.initialType ?? InformationType.values[0];
+      _isEditing = false;
+    }
   }
 
   @override
@@ -40,29 +58,61 @@ class _AddInformationScreenState extends State<AddInformationScreen> {
     super.dispose();
   }
 
-  void _onSubmit() {
+  bool get _canSubmit {
+    final title = _titleController.text.trim();
+    final content = _contentControler.text.trim();
+
+    if (title.isEmpty || content.isEmpty) return false;
+
+    if (!_isEditing) return true;
+
+    final info = widget.information!;
+
+    return title != info.title ||
+        content != info.content ||
+        _selectedType != info.type ||
+        (_selectedType == InformationType.claim &&
+            _selectedStatus.value != info.claimStatus);
+  }
+
+  Future<void> _onSubmit() async {
     if (!(_formKey.currentState?.validate() ?? false)) return;
 
     final title = _titleController.text.trim();
     final content = _contentControler.text.trim();
 
-    final newInfo = Information(
-      id: const Uuid().v4(),
-      title: title,
-      content: content,
-      type: _selectedType,
-      claimStatus: _selectedType == InformationType.claim
-          ? _selectedStatus.value
-          : null,
-      createdAt: DateTime.now(),
-      updatedAt: DateTime.now(),
-    );
+    if (_isEditing) {
+      if (_selectedType != widget.information!.type) {
+        final shouldProceed = await showConfirmationDialog(
+          context: context,
+          bodyText:
+              'You have updated information type from ${widget.information!.type.displayName} '
+              'to ${_selectedType.displayName}. Are you still sure you want to save these changes?',
+        );
 
-    debugPrint('Generated UUID (V4): ${newInfo.id}');
-    debugPrint('Info title: $title');
-    debugPrint('Info content: $content');
-    debugPrint('Info type: ${_selectedType.displayName}');
-    debugPrint('Claim status: ${newInfo.claimStatus?.displayName}');
+        if (!shouldProceed) return;
+      }
+
+      debugPrint('An editing is attempted!');
+    } else {
+      final newInfo = Information(
+        id: const Uuid().v4(),
+        title: title,
+        content: content,
+        type: _selectedType,
+        claimStatus: _selectedType == InformationType.claim
+            ? _selectedStatus.value
+            : null,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      );
+
+      debugPrint('Generated UUID (V4): ${newInfo.id}');
+      debugPrint('Info title: $title');
+      debugPrint('Info content: $content');
+      debugPrint('Info type: ${_selectedType.displayName}');
+      debugPrint('Claim status: ${newInfo.claimStatus?.displayName}');
+    }
   }
 
   String? _emptyValidator(String? v) {
@@ -83,8 +133,8 @@ class _AddInformationScreenState extends State<AddInformationScreen> {
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          const CustomSliverAppBar(
-            title: 'Add Information',
+          CustomSliverAppBar(
+            title: _isEditing ? 'Edit Information' : 'Add Information',
             centerTitle: true,
           ),
           SliverToBoxAdapter(
@@ -172,16 +222,49 @@ class _AddInformationScreenState extends State<AddInformationScreen> {
                           ValueListenableBuilder<ClaimStatus>(
                             valueListenable: _selectedStatus,
                             builder: (context, value, child) {
+                              final brightness = Theme.of(context).brightness;
+
                               return DropdownMenu<ClaimStatus>(
                                 initialSelection: ClaimStatus.unreviewed,
                                 selectOnly: true,
-                                leadingIcon: Icon(value.icon),
+                                leadingIcon: Icon(
+                                  value.icon,
+                                  color: value.getForegroundColor(brightness),
+                                ),
+                                inputDecorationTheme: InputDecorationTheme(
+                                  filled: true,
+                                  fillColor: value.getBackgroundColor(
+                                    brightness,
+                                  ),
+                                ),
+                                textStyle: TextStyle(
+                                  color: value.getForegroundColor(brightness),
+                                ),
+                                menuStyle: const MenuStyle(
+                                  padding: WidgetStatePropertyAll(
+                                    EdgeInsets.zero,
+                                  ),
+                                ),
                                 dropdownMenuEntries: ClaimStatus.values
                                     .map(
                                       (status) => DropdownMenuEntry(
                                         value: status,
                                         leadingIcon: Icon(status.icon),
                                         label: status.displayName,
+                                        style: ButtonStyle(
+                                          backgroundColor:
+                                              WidgetStatePropertyAll(
+                                                status.getBackgroundColor(
+                                                  brightness,
+                                                ),
+                                              ),
+                                          foregroundColor:
+                                              WidgetStatePropertyAll(
+                                                status.getForegroundColor(
+                                                  brightness,
+                                                ),
+                                              ),
+                                        ),
                                       ),
                                     )
                                     .toList(),
@@ -203,16 +286,27 @@ class _AddInformationScreenState extends State<AddInformationScreen> {
                       width: double.infinity,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8),
-                        child: ElevatedButton(
-                          onPressed: _onSubmit,
-                          style: ElevatedButton.styleFrom(
-                            shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(12),
+                        child: AnimatedBuilder(
+                          animation: Listenable.merge([
+                            _titleController,
+                            _contentControler,
+                            _selectedStatus,
+                          ]),
+                          builder: (context, child) {
+                            return ElevatedButton(
+                              onPressed: _canSubmit ? _onSubmit : null,
+                              style: ElevatedButton.styleFrom(
+                                shape: const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(12),
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
-                          child: const Text('Save information'),
+                              child: _isEditing
+                                  ? const Text('Save changes')
+                                  : const Text('Save information'),
+                            );
+                          },
                         ),
                       ),
                     ),
