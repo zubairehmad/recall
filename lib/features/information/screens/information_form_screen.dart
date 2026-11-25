@@ -222,16 +222,44 @@ class _InformationFormScreenState extends State<InformationFormScreen> {
                           ValueListenableBuilder<ClaimStatus>(
                             valueListenable: _selectedStatus,
                             builder: (context, value, child) {
+                              final brightness = Theme.of(context).brightness;
+
                               return DropdownMenu<ClaimStatus>(
                                 initialSelection: ClaimStatus.unreviewed,
                                 selectOnly: true,
-                                leadingIcon: Icon(value.icon),
+                                leadingIcon: Icon(
+                                  value.icon,
+                                  color: value.getForegroundColor(brightness),
+                                ),
+                                inputDecorationTheme: InputDecorationTheme(
+                                  filled: true,
+                                  fillColor: value.getBackgroundColor(
+                                    brightness,
+                                  ),
+                                ),
+                                textStyle: TextStyle(
+                                  color: value.getForegroundColor(brightness),
+                                ),
                                 dropdownMenuEntries: ClaimStatus.values
                                     .map(
                                       (status) => DropdownMenuEntry(
                                         value: status,
                                         leadingIcon: Icon(status.icon),
                                         label: status.displayName,
+                                        style: ButtonStyle(
+                                          backgroundColor:
+                                              WidgetStatePropertyAll(
+                                                status.getBackgroundColor(
+                                                  brightness,
+                                                ),
+                                              ),
+                                          foregroundColor:
+                                              WidgetStatePropertyAll(
+                                                status.getForegroundColor(
+                                                  brightness,
+                                                ),
+                                              ),
+                                        ),
                                       ),
                                     )
                                     .toList(),

@@ -68,14 +68,8 @@ class InformationDetailScreen extends StatelessWidget {
                     ),
                     if (information.claimStatus != null) ...[
                       const SizedBox(width: 8),
-                      Chip(
-                        avatar: Icon(
-                          information.claimStatus!.icon,
-                          size: 18,
-                        ),
-                        label: Text(
-                          information.claimStatus!.displayName,
-                        ),
+                      _ClaimStatusCard(
+                        status: information.claimStatus!,
                       ),
                     ],
                   ],
@@ -112,6 +106,50 @@ class InformationDetailScreen extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _ClaimStatusCard extends StatelessWidget {
+  final ClaimStatus status;
+  const _ClaimStatusCard({
+    required this.status,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
+    final foregroundColor = status.getForegroundColor(brightness);
+    final backgroundColor = status.getBackgroundColor(brightness);
+
+    return Card(
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadiusGeometry.all(Radius.circular(12)),
+      ),
+      color: backgroundColor,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 8,
+        ),
+        child: Row(
+          children: [
+            Icon(
+              status.icon,
+              size: 18,
+              color: foregroundColor,
+            ),
+            const SizedBox(width: 4),
+            Text(
+              status.displayName,
+              style: TextStyle(
+                color: foregroundColor,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
