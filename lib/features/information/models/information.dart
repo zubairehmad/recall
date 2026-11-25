@@ -131,4 +131,28 @@ class Information {
       updatedAt: updatedAt ?? this.updatedAt,
     );
   }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other is Information &&
+            other.id == id &&
+            other.title == title &&
+            other.content == content &&
+            other.type == type &&
+            other.claimStatus == claimStatus &&
+            other.createdAt == createdAt &&
+            other.updatedAt == updatedAt);
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    title,
+    content,
+    type,
+    claimStatus,
+    createdAt,
+    updatedAt,
+  );
 }
