@@ -240,6 +240,11 @@ class _InformationFormScreenState extends State<InformationFormScreen> {
                                 textStyle: TextStyle(
                                   color: value.getForegroundColor(brightness),
                                 ),
+                                menuStyle: const MenuStyle(
+                                  padding: WidgetStatePropertyAll(
+                                    EdgeInsets.zero,
+                                  ),
+                                ),
                                 dropdownMenuEntries: ClaimStatus.values
                                     .map(
                                       (status) => DropdownMenuEntry(
