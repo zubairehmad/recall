@@ -13,6 +13,8 @@ class InformationListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return InkWell(
       onTap: () => Navigator.of(context).pushNamed(
         InformationDetailScreen.routeName,
@@ -29,14 +31,43 @@ class InformationListItem extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    information.title,
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 1,
-                    style: const TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w500,
-                    ),
+                  Row(
+                    children: [
+                      Flexible(
+                        child: Text(
+                          information.title,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                          style: const TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                      if (information.isClaim) ...[
+                        const SizedBox(width: 4),
+                        Card(
+                          color: information.claimStatus!.getBackgroundColor(
+                            brightness,
+                          ),
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(12)),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
+                            child: Icon(
+                              information.claimStatus!.icon,
+                              color: information.claimStatus!
+                                  .getForegroundColor(brightness),
+                              size: 16,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ],
                   ),
                   const SizedBox(height: 4),
                   Text(
