@@ -29,6 +29,7 @@ class _InformationFormScreenState extends State<InformationFormScreen> {
 
   final _formKey = GlobalKey<FormState>();
   final _selectedStatus = ValueNotifier(ClaimStatus.unreviewed);
+  late final ClaimStatus _initialValue;
   final _titleController = TextEditingController();
   final _contentControler = TextEditingController();
 
@@ -41,13 +42,14 @@ class _InformationFormScreenState extends State<InformationFormScreen> {
 
       _selectedType = info.type;
       if (info.isClaim) {
-        _selectedStatus.value = info.claimStatus!;
+        _initialValue = _selectedStatus.value = info.claimStatus!;
       }
       _titleController.text = info.title;
       _contentControler.text = info.content;
       _isEditing = true;
     } else {
       _selectedType = widget.initialType ?? InformationType.values[0];
+      _initialValue = _selectedStatus.value;
       _isEditing = false;
     }
   }
@@ -251,7 +253,7 @@ class _InformationFormScreenState extends State<InformationFormScreen> {
                               final brightness = Theme.of(context).brightness;
 
                               return DropdownMenu<ClaimStatus>(
-                                initialSelection: ClaimStatus.unreviewed,
+                                initialSelection: _initialValue,
                                 selectOnly: true,
                                 leadingIcon: Icon(
                                   value.icon,
