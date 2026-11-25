@@ -83,7 +83,7 @@ class _InformationCard extends StatelessWidget {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerLow,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: const BorderRadius.all(Radius.circular(12)),
         border: Border.all(
           color: colorScheme.outlineVariant,
         ),
