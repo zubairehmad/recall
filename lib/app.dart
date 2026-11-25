@@ -36,9 +36,10 @@ class MyApp extends StatelessWidget {
             );
           },
           InformationDetailScreen.routeName: (ctx) {
-            final info = ModalRoute.of(ctx)?.settings.arguments as Information;
-
-            return InformationDetailScreen(information: info);
+            final infoId = ModalRoute.of(ctx)?.settings.arguments as String;
+            return InformationDetailScreen(
+              infoId: infoId,
+            );
           },
         },
       ),

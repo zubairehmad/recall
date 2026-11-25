@@ -63,6 +63,11 @@ class InformationProvider with ChangeNotifier {
         .toList();
   }
 
+  Information? getInfo(String id) {
+    final idx = _information.indexWhere((info) => info.id == id);
+    return idx == -1 ? null : _information[idx];
+  }
+
   bool addInformation(Information info) {
     if (_information.any((item) => item.id == info.id)) return false;
 

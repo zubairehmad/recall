@@ -18,7 +18,7 @@ class InformationListItem extends StatelessWidget {
     return InkWell(
       onTap: () => Navigator.of(context).pushNamed(
         InformationDetailScreen.routeName,
-        arguments: information,
+        arguments: information.id,
       ),
       borderRadius: const BorderRadius.all(Radius.circular(12)),
       child: Padding(

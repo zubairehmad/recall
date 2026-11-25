@@ -1,23 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import 'information_form_screen.dart';
+import '../models/information.dart';
+import '../providers/information_provider.dart';
+import '../widgets/confirmation_dialog.dart';
 import '../../../core/utils/date_formatter.dart';
 import '../../../core/widgets/custom_sliver_app_bar.dart';
-import '../models/information.dart';
-import '../widgets/confirmation_dialog.dart';
-import 'information_form_screen.dart';
 
 class InformationDetailScreen extends StatelessWidget {
   static const routeName = '/info-details';
 
-  final Information information;
+  final String infoId;
 
   const InformationDetailScreen({
     super.key,
-    required this.information,
+    required this.infoId,
   });
 
   @override
   Widget build(BuildContext context) {
+    final information = context.select<InformationProvider, Information>(
+      (p) => p.getInfo(infoId)!,
+    );
+
     return Scaffold(
       body: CustomScrollView(
         slivers: [
