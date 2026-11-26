@@ -12,10 +12,12 @@ class DistributionCard extends StatefulWidget {
     })
   >
   sections;
+  final String onEmpty;
 
   const DistributionCard({
     super.key,
     required this.sections,
+    this.onEmpty = 'No information yet',
   });
 
   @override
@@ -24,9 +26,49 @@ class DistributionCard extends StatefulWidget {
 
 class _DistributionCardState extends State<DistributionCard> {
   int? _selectedIdx;
+  late int _totalCnt;
+
+  @override
+  void initState() {
+    super.initState();
+    _totalCnt = widget.sections.fold(
+      0,
+      (s, curr) => s + curr.count,
+    );
+  }
+
+  @override
+  void didUpdateWidget(covariant DistributionCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _totalCnt = widget.sections.fold(
+      0,
+      (s, curr) => s + curr.count,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
+    if (_totalCnt == 0) {
+      return Card(
+        child: SizedBox(
+          height: 220,
+          child: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(
+                  Icons.pie_chart_outline,
+                  size: 40,
+                ),
+                const SizedBox(height: 8),
+                Text(widget.onEmpty),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
     return Card(
       child: LayoutBuilder(
         builder: (context, constraints) {
@@ -95,12 +137,7 @@ class _DistributionCardState extends State<DistributionCard> {
                             _selectedIdx != null
                                 ? widget.sections[_selectedIdx!].count
                                       .toString()
-                                : widget.sections
-                                      .fold<int>(
-                                        0,
-                                        (prev, curr) => prev + curr.count,
-                                      )
-                                      .toString(),
+                                : _totalCnt.toString(),
                             style: TextStyle(
                               fontSize: chartSize * 0.12,
                               fontWeight: FontWeight.bold,
