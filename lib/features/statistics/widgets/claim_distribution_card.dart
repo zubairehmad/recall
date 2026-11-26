@@ -7,7 +7,7 @@ class ClaimDistributionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return const Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
@@ -19,6 +19,7 @@ class ClaimDistributionCard extends StatelessWidget {
         ),
         SizedBox(height: 12),
         DistributionCard(
+          onEmpty: 'No claims yet',
           sections: [
             (label: 'Unreviewed', count: 10, color: Colors.red),
             (label: 'Disputed', count: 14, color: Colors.orange),
