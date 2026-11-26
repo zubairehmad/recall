@@ -51,12 +51,7 @@ class InformationProvider with ChangeNotifier {
   final InformationStatsProvider _statsProvider;
 
   InformationProvider(this._statsProvider) {
-    for (final info in _information) {
-      _statsProvider.updateInfoCount(info.type, 1);
-      if (info.isClaim) {
-        _statsProvider.updateClaimCount(info.claimStatus!, 1);
-      }
-    }
+    _statsProvider.initialize(_information);
   }
 
   List<Information> get informationList => List.unmodifiable(_information);
@@ -83,10 +78,7 @@ class InformationProvider with ChangeNotifier {
     if (_information.any((item) => item.id == info.id)) return false;
 
     _information.add(info);
-    _statsProvider.updateInfoCount(info.type, 1);
-    if (info.isClaim) {
-      _statsProvider.updateClaimCount(info.claimStatus!, 1);
-    }
+    _statsProvider.onInformationAdded(info);
     notifyListeners();
 
     return true;
@@ -99,22 +91,8 @@ class InformationProvider with ChangeNotifier {
     if (idx == -1) return false;
 
     final oldInfo = _information[idx];
-
-    if (oldInfo.type != updatedInfo.type) {
-      _statsProvider.updateInfoCount(oldInfo.type, -1);
-      _statsProvider.updateInfoCount(updatedInfo.type, 1);
-    }
-
-    if (updatedInfo.claimStatus != oldInfo.claimStatus) {
-      if (oldInfo.isClaim) {
-        _statsProvider.updateClaimCount(oldInfo.claimStatus!, -1);
-      }
-      if (updatedInfo.isClaim) {
-        _statsProvider.updateClaimCount(updatedInfo.claimStatus!, 1);
-      }
-    }
-
     _information[idx] = updatedInfo;
+    _statsProvider.onInformationUpdated(oldInfo, updatedInfo);
     notifyListeners();
 
     return true;
@@ -125,13 +103,9 @@ class InformationProvider with ChangeNotifier {
     if (idx == -1) return false;
 
     final info = _information.removeAt(idx);
-
-    _statsProvider.updateInfoCount(info.type, -1);
-    if (info.isClaim) {
-      _statsProvider.updateClaimCount(info.claimStatus!, -1);
-    }
-
+    _statsProvider.onInformationDeleted(info);
     notifyListeners();
+
     return true;
   }
 }

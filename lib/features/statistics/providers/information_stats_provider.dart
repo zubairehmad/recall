@@ -99,19 +99,6 @@ class InformationStatsProvider with ChangeNotifier {
     }
   }
 
-  void setInfoCount(InformationType type, int newCount) {
-    if (newCount < 0 || _getCnt(type) == newCount) return;
-    _setCnt(type, newCount);
-    notifyListeners();
-  }
-
-  void updateInfoCount(InformationType type, int delta) {
-    final currCnt = _getCnt(type);
-    if (delta == 0 || currCnt + delta < 0) return;
-    _setCnt(type, currCnt + delta);
-    notifyListeners();
-  }
-
   int _getClaimCnt(ClaimStatus status) {
     return switch (status) {
       ClaimStatus.verified => _claimCnts.verified,
@@ -138,16 +125,57 @@ class InformationStatsProvider with ChangeNotifier {
     }
   }
 
-  void setClaimCount(ClaimStatus status, int newCount) {
-    if (newCount < 0 || _getClaimCnt(status) == newCount) return;
-    _setClaimCnt(status, newCount);
+  void initialize(List<Information> information) {
+    for (final info in information) {
+      _setCnt(info.type, _getCnt(info.type) + 1);
+
+      if (info.isClaim) {
+        _setClaimCnt(
+          info.claimStatus!,
+          _getClaimCnt(info.claimStatus!) + 1,
+        );
+      }
+    }
+  }
+
+  void onInformationAdded(Information info) {
+    _setCnt(info.type, _getCnt(info.type) + 1);
+    if (info.isClaim) {
+      _setClaimCnt(info.claimStatus!, _getClaimCnt(info.claimStatus!) + 1);
+    }
     notifyListeners();
   }
 
-  void updateClaimCount(ClaimStatus status, int delta) {
-    int currCnt = _getClaimCnt(status);
-    if (delta == 0 || currCnt + delta < 0) return;
-    _setClaimCnt(status, currCnt + delta);
+  void onInformationDeleted(Information info) {
+    _setCnt(info.type, _getCnt(info.type) - 1);
+    if (info.isClaim) {
+      _setClaimCnt(info.claimStatus!, _getClaimCnt(info.claimStatus!) - 1);
+    }
+    notifyListeners();
+  }
+
+  void onInformationUpdated(Information oldInfo, Information newInfo) {
+    if (oldInfo.type != newInfo.type) {
+      _setCnt(oldInfo.type, _getCnt(oldInfo.type) - 1);
+      _setCnt(newInfo.type, _getCnt(newInfo.type) + 1);
+    }
+
+    if (oldInfo.claimStatus != newInfo.claimStatus) {
+      if (oldInfo.isClaim) {
+        _setClaimCnt(
+          oldInfo.claimStatus!,
+          _getClaimCnt(oldInfo.claimStatus!) - 1,
+        );
+      }
+
+      if (newInfo.isClaim) {
+        _setClaimCnt(
+          newInfo.claimStatus!,
+          _getClaimCnt(newInfo.claimStatus!) + 1,
+        );
+      }
+    }
+
     notifyListeners();
   }
 }
