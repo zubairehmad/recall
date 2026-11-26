@@ -63,10 +63,13 @@ class InformationListScreen extends StatelessWidget {
                               ?.copyWith(fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(height: 12),
-                        const Text(
-                          'Start building your personal collection of '
-                          'facts, tips, notes, and claims worth remembering.',
-                          textAlign: TextAlign.center,
+                        const Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 6),
+                          child: Text(
+                            'Start building your personal collection of '
+                            'facts, tips, notes, and claims worth remembering.',
+                            textAlign: TextAlign.center,
+                          ),
                         ),
                         const SizedBox(height: 20),
                         FilledButton.icon(

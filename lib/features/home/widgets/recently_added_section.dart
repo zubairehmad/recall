@@ -13,6 +13,12 @@ class RecentlyAddedSection extends StatelessWidget {
         .watch<InformationProvider>()
         .recentlyAddedList;
 
+    if (recentlyAdded.isEmpty) {
+      return const SliverToBoxAdapter(
+        child: SizedBox.shrink(),
+      );
+    }
+
     return SliverMainAxisGroup(
       slivers: [
         SliverToBoxAdapter(
