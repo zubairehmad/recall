@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../../statistics/providers/information_stats_provider.dart';
 
 class BasicOverviewSection extends StatelessWidget {
   const BasicOverviewSection({super.key});
@@ -34,6 +37,15 @@ class BasicOverviewSection extends StatelessWidget {
           child: LayoutBuilder(
             builder: (context, constraints) {
               final width = (constraints.maxWidth - 6) / 2;
+              final cnts = context
+                  .select<InformationStatsProvider, (int, int, int, int)>(
+                    (p) => (
+                      p.totalSaved,
+                      p.reviewedClaimsCnt,
+                      p.tipsCnt,
+                      p.notesCnt,
+                    ),
+                  );
 
               return Wrap(
                 spacing: 6,
@@ -43,7 +55,7 @@ class BasicOverviewSection extends StatelessWidget {
                     width: width,
                     child: _CustomGridItem(
                       icon: const Icon(Icons.library_books),
-                      number: 128,
+                      number: cnts.$1,
                       text: 'Total saved',
                       onPressed: () {},
                     ),
@@ -52,7 +64,7 @@ class BasicOverviewSection extends StatelessWidget {
                     width: width,
                     child: _CustomGridItem(
                       icon: const Icon(Icons.verified_outlined),
-                      number: 42,
+                      number: cnts.$2,
                       text: 'Reviewed claims',
                       onPressed: () {},
                     ),
@@ -61,7 +73,7 @@ class BasicOverviewSection extends StatelessWidget {
                     width: width,
                     child: _CustomGridItem(
                       icon: const Icon(Icons.lightbulb_outline),
-                      number: 36,
+                      number: cnts.$3,
                       text: 'Tips',
                       onPressed: () {},
                     ),
@@ -70,7 +82,7 @@ class BasicOverviewSection extends StatelessWidget {
                     width: width,
                     child: _CustomGridItem(
                       icon: const Icon(Icons.bookmark_outline),
-                      number: 16,
+                      number: cnts.$4,
                       text: 'Notes',
                       onPressed: () {},
                     ),

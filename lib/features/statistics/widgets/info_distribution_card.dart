@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../providers/information_stats_provider.dart';
 import 'distribution_card.dart';
 
 class InfoDistributionCard extends StatelessWidget {
@@ -7,23 +9,36 @@ class InfoDistributionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
+    final cnts = context.select<InformationStatsProvider, (int, int, int, int)>(
+      (p) => (
+        p.claimsCnt,
+        p.factsCnt,
+        p.tipsCnt,
+        p.notesCnt,
+      ),
+    );
+
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
+        const Text(
           'Total Info Distribution',
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
           ),
         ),
-        SizedBox(height: 12),
+        const SizedBox(height: 12),
         DistributionCard(
           sections: [
-            (label: 'Claims', count: 52, color: Colors.blue),
-            (label: 'Facts', count: 24, color: Colors.orange),
-            (label: 'Tips', count: 36, color: Colors.green),
-            (label: 'Notes', count: 16, color: Colors.purple),
+            if (cnts.$1 > 0)
+              (label: 'Claims', count: cnts.$1, color: Colors.blue),
+            if (cnts.$2 > 0)
+              (label: 'Facts', count: cnts.$2, color: Colors.orange),
+            if (cnts.$3 > 0)
+              (label: 'Tips', count: cnts.$3, color: Colors.green),
+            if (cnts.$4 > 0)
+              (label: 'Notes', count: cnts.$4, color: Colors.purple),
           ],
         ),
       ],

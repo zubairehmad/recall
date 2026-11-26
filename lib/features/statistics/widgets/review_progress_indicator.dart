@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../providers/information_stats_provider.dart';
 
 class ReviewProgressIndicator extends StatelessWidget {
   const ReviewProgressIndicator({super.key});
@@ -6,6 +9,12 @@ class ReviewProgressIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDarkMode = Theme.brightnessOf(context) == Brightness.dark;
+    final cnts = context.select<InformationStatsProvider, (int, int)>(
+      (p) => (p.reviewedClaimsCnt, p.claimsCnt),
+    );
+
+    final reviewed = cnts.$1;
+    final total = cnts.$2;
 
     return Card(
       child: Padding(
@@ -16,18 +25,18 @@ class ReviewProgressIndicator extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
+                const Text(
                   'Claim Review Progress',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const Text('42/52'),
+                Text('$reviewed/$total'),
               ],
             ),
-            SizedBox(height: 12),
+            const SizedBox(height: 12),
             LinearProgressIndicator(
-              value: 0.8,
+              value: reviewed / total,
               minHeight: 6,
               color: Colors.green.shade700,
               backgroundColor: isDarkMode

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../models/information.dart';
+import '../../statistics/providers/information_stats_provider.dart';
 
 class InformationProvider with ChangeNotifier {
-  /// Mock data
   final _information = [
     Information(
       id: '1',
@@ -48,6 +48,12 @@ class InformationProvider with ChangeNotifier {
     ),
   ];
 
+  final InformationStatsProvider _statsProvider;
+
+  InformationProvider(this._statsProvider) {
+    _statsProvider.initialize(_information);
+  }
+
   List<Information> get informationList => List.unmodifiable(_information);
   List<Information> get recentlyAddedList {
     final now = DateTime.now();
@@ -72,6 +78,7 @@ class InformationProvider with ChangeNotifier {
     if (_information.any((item) => item.id == info.id)) return false;
 
     _information.add(info);
+    _statsProvider.onInformationAdded(info);
     notifyListeners();
 
     return true;
@@ -83,21 +90,22 @@ class InformationProvider with ChangeNotifier {
     );
     if (idx == -1) return false;
 
+    final oldInfo = _information[idx];
     _information[idx] = updatedInfo;
+    _statsProvider.onInformationUpdated(oldInfo, updatedInfo);
     notifyListeners();
 
     return true;
   }
 
   bool deleteInformation(String id) {
-    final prevLen = _information.length;
-    _information.removeWhere((info) => info.id == id);
+    final idx = _information.indexWhere((info) => info.id == id);
+    if (idx == -1) return false;
 
-    if (_information.length != prevLen) {
-      notifyListeners();
-      return true;
-    }
+    final info = _information.removeAt(idx);
+    _statsProvider.onInformationDeleted(info);
+    notifyListeners();
 
-    return false;
+    return true;
   }
 }
