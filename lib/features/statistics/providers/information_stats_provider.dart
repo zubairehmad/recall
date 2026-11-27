@@ -136,6 +136,7 @@ class InformationStatsProvider with ChangeNotifier {
         );
       }
     }
+    notifyListeners();
   }
 
   void onInformationAdded(Information info) {

@@ -16,6 +16,10 @@ class ReviewProgressIndicator extends StatelessWidget {
     final reviewed = cnts.$1;
     final total = cnts.$2;
 
+    if (total == 0) {
+      return const SizedBox.shrink();
+    }
+
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),

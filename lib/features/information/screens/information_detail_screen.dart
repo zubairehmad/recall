@@ -8,7 +8,7 @@ import '../widgets/confirmation_dialog.dart';
 import '../../../core/utils/date_formatter.dart';
 import '../../../core/widgets/custom_sliver_app_bar.dart';
 
-class InformationDetailScreen extends StatelessWidget {
+class InformationDetailScreen extends StatefulWidget {
   static const routeName = '/info-details';
 
   final String infoId;
@@ -19,60 +19,86 @@ class InformationDetailScreen extends StatelessWidget {
   });
 
   @override
+  State<InformationDetailScreen> createState() =>
+      _InformationDetailScreenState();
+}
+
+class _InformationDetailScreenState extends State<InformationDetailScreen> {
+  final _isLoading = ValueNotifier(false);
+
+  @override
+  void dispose() {
+    _isLoading.dispose();
+    super.dispose();
+  }
+
+  Future<void> _handleDelete(String id) async {
+    if (_isLoading.value) return;
+
+    _isLoading.value = true;
+
+    try {
+      final infoProvider = context.read<InformationProvider>();
+      final shouldDelete = await showConfirmationDialog(
+        context: context,
+        bodyText:
+            'Are you sure you want to perform this operation?\nThis operation cannot be undone.',
+      );
+
+      if (shouldDelete && await infoProvider.deleteInformation(id) && mounted) {
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(
+            const SnackBar(
+              content: Text('Deleted successfully!'),
+            ),
+          );
+        Navigator.of(context).pop();
+      }
+    } finally {
+      _isLoading.value = false;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final information = context.select<InformationProvider, Information?>(
-      (p) => p.getInfo(infoId),
+      (p) => p.getInfo(widget.infoId),
     );
 
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          CustomSliverAppBar(
-            title: 'Information Details',
-            actions: [
-              IconButton(
-                onPressed: information == null
-                    ? null
-                    : () => Navigator.of(context).pushNamed(
-                        InformationFormScreen.routeName,
-                        arguments: {
-                          'information': information,
-                        },
-                      ),
-                icon: const Icon(Icons.edit_outlined),
-              ),
-              IconButton(
-                onPressed: information == null
-                    ? null
-                    : () async {
-                        final infoProvider = context
-                            .read<InformationProvider>();
-                        final shouldDelete = await showConfirmationDialog(
-                          context: context,
-                          bodyText:
-                              'Are you sure you want to perform this operation?\nThis operation cannot be undone.',
-                        );
-
-                        if (shouldDelete &&
-                            infoProvider.deleteInformation(information.id) &&
-                            context.mounted) {
-                          ScaffoldMessenger.of(context)
-                            ..hideCurrentSnackBar()
-                            ..showSnackBar(
-                              const SnackBar(
-                                content: Text('Deleted successfully!'),
-                              ),
-                            );
-                          Navigator.of(context).pop();
-                        }
-                      },
-                icon: const Icon(
-                  Icons.delete_outline,
-                  color: Colors.red,
-                ),
-              ),
-              const SizedBox(width: 8),
-            ],
+          ValueListenableBuilder(
+            valueListenable: _isLoading,
+            builder: (context, isLoading, _) {
+              return CustomSliverAppBar(
+                title: 'Information Details',
+                actions: [
+                  IconButton(
+                    onPressed: information == null || isLoading
+                        ? null
+                        : () => Navigator.of(context).pushNamed(
+                            InformationFormScreen.routeName,
+                            arguments: {
+                              'information': information,
+                            },
+                          ),
+                    icon: const Icon(Icons.edit_outlined),
+                  ),
+                  IconButton(
+                    onPressed: information == null || isLoading
+                        ? null
+                        : () => _handleDelete(information.id),
+                    icon: const Icon(
+                      Icons.delete_outline,
+                      color: Colors.red,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                ],
+              );
+            },
           ),
           SliverPadding(
             padding: const EdgeInsets.all(16),

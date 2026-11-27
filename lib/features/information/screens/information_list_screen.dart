@@ -12,7 +12,8 @@ class InformationListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final infoList = context.watch<InformationProvider>().informationList;
+    final infoProvider = context.watch<InformationProvider>();
+    final infoList = infoProvider.informationList;
 
     const padding = EdgeInsets.symmetric(
       horizontal: 12,
@@ -49,38 +50,43 @@ class InformationListScreen extends StatelessWidget {
               ? SliverFillRemaining(
                   child: Padding(
                     padding: padding,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.library_books_outlined,
-                          size: 64,
-                        ),
-                        const SizedBox(height: 20),
-                        Text(
-                          'Your library is empty',
-                          style: Theme.of(context).textTheme.titleLarge
-                              ?.copyWith(fontWeight: FontWeight.bold),
-                        ),
-                        const SizedBox(height: 12),
-                        const Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 6),
-                          child: Text(
-                            'Start building your personal collection of '
-                            'facts, tips, notes, and claims worth remembering.',
-                            textAlign: TextAlign.center,
+                    child: !infoProvider.isInitialized
+                        ? const Center(
+                            child: CircularProgressIndicator(),
+                          )
+                        : Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.library_books_outlined,
+                                size: 64,
+                              ),
+                              const SizedBox(height: 20),
+                              Text(
+                                'Your library is empty',
+                                style: Theme.of(context).textTheme.titleLarge
+                                    ?.copyWith(fontWeight: FontWeight.bold),
+                              ),
+                              const SizedBox(height: 12),
+                              const Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 6),
+                                child: Text(
+                                  'Start building your personal collection of '
+                                  'facts, tips, notes, and claims worth remembering.',
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                              const SizedBox(height: 20),
+                              FilledButton.icon(
+                                onPressed: () =>
+                                    Navigator.of(context).pushNamed(
+                                      InformationFormScreen.routeName,
+                                    ),
+                                icon: const Icon(Icons.add),
+                                label: const Text('Add your first entry'),
+                              ),
+                            ],
                           ),
-                        ),
-                        const SizedBox(height: 20),
-                        FilledButton.icon(
-                          onPressed: () => Navigator.of(context).pushNamed(
-                            InformationFormScreen.routeName,
-                          ),
-                          icon: const Icon(Icons.add),
-                          label: const Text('Add your first entry'),
-                        ),
-                      ],
-                    ),
                   ),
                 )
               : SliverPadding(
