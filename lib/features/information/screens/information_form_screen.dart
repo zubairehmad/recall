@@ -33,6 +33,8 @@ class _InformationFormScreenState extends State<InformationFormScreen> {
   final _titleController = TextEditingController();
   final _contentControler = TextEditingController();
 
+  bool _isSubmitting = false;
+
   @override
   void initState() {
     super.initState();
@@ -64,6 +66,8 @@ class _InformationFormScreenState extends State<InformationFormScreen> {
   }
 
   bool get _canSubmit {
+    if (_isSubmitting) return false;
+
     final title = _titleController.text.trim();
     final content = _contentControler.text.trim();
 
@@ -81,70 +85,80 @@ class _InformationFormScreenState extends State<InformationFormScreen> {
   }
 
   Future<void> _onSubmit() async {
-    if (!(_formKey.currentState?.validate() ?? false)) return;
+    if (_isSubmitting || !(_formKey.currentState?.validate() ?? false)) return;
 
     final title = _titleController.text.trim();
     final content = _contentControler.text.trim();
     final now = DateTime.now();
     final infoProvider = context.read<InformationProvider>();
 
-    if (_isEditing) {
-      if (_selectedType != widget.information!.type) {
-        final shouldProceed = await showConfirmationDialog(
-          context: context,
-          bodyText:
-              'You have updated information type from ${widget.information!.type.displayName} '
-              'to ${_selectedType.displayName}. Are you still sure you want to save these changes?',
+    setState(() => _isSubmitting = true);
+
+    try {
+      if (_isEditing) {
+        if (_selectedType != widget.information!.type) {
+          final shouldProceed = await showConfirmationDialog(
+            context: context,
+            bodyText:
+                'You have updated information type from ${widget.information!.type.displayName} '
+                'to ${_selectedType.displayName}. Are you still sure you want to save these changes?',
+          );
+
+          if (!shouldProceed) return;
+        }
+
+        final upd = widget.information!.copyWith(
+          title: title,
+          content: content,
+          type: _selectedType,
+          claimStatus: _selectedType == InformationType.claim
+              ? _selectedStatus.value
+              : null,
+          updatedAt: now,
         );
 
-        if (!shouldProceed) return;
+        if (await infoProvider.updateInformation(upd) && mounted) {
+          ScaffoldMessenger.of(context)
+            ..hideCurrentSnackBar()
+            ..showSnackBar(
+              const SnackBar(
+                content: Text('Saved changes successfully!'),
+              ),
+            );
+        }
+      } else {
+        final newInfo = Information(
+          id: const Uuid().v4(),
+          title: title,
+          content: content,
+          type: _selectedType,
+          claimStatus: _selectedType == InformationType.claim
+              ? _selectedStatus.value
+              : null,
+          createdAt: now,
+          updatedAt: now,
+        );
+
+        if (await infoProvider.addInformation(newInfo) && mounted) {
+          ScaffoldMessenger.of(context)
+            ..hideCurrentSnackBar()
+            ..showSnackBar(
+              SnackBar(
+                content: Text(
+                  '${_selectedType.displayName} added successfully!',
+                ),
+              ),
+            );
+        }
       }
 
-      final upd = widget.information!.copyWith(
-        title: title,
-        content: content,
-        type: _selectedType,
-        claimStatus: _selectedType == InformationType.claim
-            ? _selectedStatus.value
-            : null,
-        updatedAt: now,
-      );
-
-      if (infoProvider.updateInformation(upd) && mounted) {
-        ScaffoldMessenger.of(context)
-          ..hideCurrentSnackBar()
-          ..showSnackBar(
-            const SnackBar(
-              content: Text('Saved changes successfully!'),
-            ),
-          );
+      if (mounted) {
+        Navigator.of(context).pop();
       }
-    } else {
-      final newInfo = Information(
-        id: const Uuid().v4(),
-        title: title,
-        content: content,
-        type: _selectedType,
-        claimStatus: _selectedType == InformationType.claim
-            ? _selectedStatus.value
-            : null,
-        createdAt: now,
-        updatedAt: now,
-      );
-
-      if (infoProvider.addInformation(newInfo)) {
-        ScaffoldMessenger.of(context)
-          ..hideCurrentSnackBar()
-          ..showSnackBar(
-            SnackBar(
-              content: Text('${_selectedType.displayName} added successfully!'),
-            ),
-          );
+    } finally {
+      if (mounted) {
+        setState(() => _isSubmitting = false);
       }
-    }
-
-    if (mounted) {
-      Navigator.of(context).pop();
     }
   }
 
@@ -197,6 +211,7 @@ class _InformationFormScreenState extends State<InformationFormScreen> {
                                 child: _InfoTypeSelector(
                                   icon: type.icon,
                                   label: type.displayName,
+                                  disable: _isSubmitting,
                                   isSelected: _selectedType == type,
                                   onPressed: () {
                                     if (_selectedType != type) {
@@ -221,6 +236,7 @@ class _InformationFormScreenState extends State<InformationFormScreen> {
                       maxLines: 2,
                       maxLength: 80,
                       controller: _titleController,
+                      enabled: !_isSubmitting,
                       validator: _emptyValidator,
                       decoration: const InputDecoration(
                         hintText: 'Enter a short title...',
@@ -238,6 +254,7 @@ class _InformationFormScreenState extends State<InformationFormScreen> {
                       maxLines: 8,
                       maxLength: 2000,
                       controller: _contentControler,
+                      enabled: !_isSubmitting,
                       validator: _emptyValidator,
                       decoration: const InputDecoration(
                         hintText: 'Add your information...',
@@ -335,7 +352,14 @@ class _InformationFormScreenState extends State<InformationFormScreen> {
                                   ),
                                 ),
                               ),
-                              child: _isEditing
+                              child: _isSubmitting
+                                  ? const SizedBox.square(
+                                      dimension: 20,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2.5,
+                                      ),
+                                    )
+                                  : _isEditing
                                   ? const Text('Save changes')
                                   : const Text('Save information'),
                             );
@@ -359,6 +383,7 @@ class _InfoTypeSelector extends StatelessWidget {
   final IconData icon;
   final String label;
   final VoidCallback onPressed;
+  final bool disable;
   final bool isSelected;
 
   const _InfoTypeSelector({
@@ -366,31 +391,43 @@ class _InfoTypeSelector extends StatelessWidget {
     required this.label,
     required this.onPressed,
     required this.isSelected,
+    this.disable = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
 
     return Card(
       margin: EdgeInsets.zero,
       elevation: 0,
       clipBehavior: Clip.antiAlias,
-      color: isSelected ? colorScheme.primaryContainer : null,
+      color: disable && isSelected
+          ? theme.disabledColor
+          : disable
+          ? colorScheme.surface.withAlpha(160)
+          : isSelected
+          ? colorScheme.primaryContainer
+          : null,
       shape: isSelected
           ? const RoundedRectangleBorder(
               borderRadius: BorderRadiusGeometry.all(Radius.circular(12)),
             )
           : null,
       child: InkWell(
-        onTap: onPressed,
+        onTap: disable ? null : onPressed,
         child: Padding(
           padding: const EdgeInsetsGeometry.all(12),
           child: Column(
             children: [
               Icon(
                 icon,
-                color: isSelected ? colorScheme.onPrimaryContainer : null,
+                color: isSelected
+                    ? colorScheme.onPrimaryContainer
+                    : disable
+                    ? colorScheme.onSurface.withAlpha(160)
+                    : null,
               ),
               const SizedBox(height: 6),
               Text(
@@ -401,6 +438,10 @@ class _InfoTypeSelector extends StatelessWidget {
                     ? TextStyle(
                         color: colorScheme.onPrimaryContainer,
                         fontWeight: FontWeight.bold,
+                      )
+                    : disable
+                    ? TextStyle(
+                        color: colorScheme.onSurface.withAlpha(160),
                       )
                     : null,
               ),
