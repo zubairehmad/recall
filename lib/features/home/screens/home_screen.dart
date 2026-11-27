@@ -16,17 +16,17 @@ class HomeScreen extends StatelessWidget {
       vertical: 10,
     );
 
-    return Scaffold(
+    return const Scaffold(
       body: CustomScrollView(
         slivers: [
-          const SliverToBoxAdapter(
+          SliverToBoxAdapter(
             child: SizedBox(height: 12),
           ),
           CustomSliverAppBar(
             title: 'Recall',
             subtitle: 'Your personal knowledge space.',
           ),
-          const SliverToBoxAdapter(
+          SliverToBoxAdapter(
             child: Padding(
               padding: padding,
               child: CustomSearchBar(
@@ -34,15 +34,15 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
           ),
-          const SliverPadding(
+          SliverPadding(
             padding: padding,
             sliver: QuickAddSection(),
           ),
-          const SliverPadding(
+          SliverPadding(
             padding: padding,
             sliver: BasicOverviewSection(),
           ),
-          const SliverPadding(
+          SliverPadding(
             padding: padding,
             sliver: RecentlyAddedSection(),
           ),
