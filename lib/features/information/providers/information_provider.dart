@@ -31,6 +31,8 @@ class InformationProvider with ChangeNotifier {
         .toList();
   }
 
+  bool get isInitialized => _initialized;
+
   Future<void> _initialize() async {
     _information = await InformationRepository.getAll();
     _statsProvider.initialize(_information);
