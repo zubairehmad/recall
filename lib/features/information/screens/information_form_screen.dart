@@ -269,62 +269,65 @@ class _InformationFormScreenState extends State<InformationFormScreen> {
                             'Claim Status',
                             style: textStyle,
                           ),
-                          ValueListenableBuilder<ClaimStatus>(
-                            valueListenable: _selectedStatus,
-                            builder: (context, value, child) {
-                              final brightness = Theme.of(context).brightness;
+                          const SizedBox(width: 18),
+                          Flexible(
+                            child: ValueListenableBuilder<ClaimStatus>(
+                              valueListenable: _selectedStatus,
+                              builder: (context, value, child) {
+                                final brightness = Theme.of(context).brightness;
 
-                              return DropdownMenu<ClaimStatus>(
-                                initialSelection: _initialValue,
-                                selectOnly: true,
-                                leadingIcon: Icon(
-                                  value.icon,
-                                  color: value.getForegroundColor(brightness),
-                                ),
-                                inputDecorationTheme: InputDecorationTheme(
-                                  filled: true,
-                                  fillColor: value.getBackgroundColor(
-                                    brightness,
+                                return DropdownMenu<ClaimStatus>(
+                                  initialSelection: _initialValue,
+                                  selectOnly: true,
+                                  leadingIcon: Icon(
+                                    value.icon,
+                                    color: value.getForegroundColor(brightness),
                                   ),
-                                ),
-                                textStyle: TextStyle(
-                                  color: value.getForegroundColor(brightness),
-                                ),
-                                menuStyle: const MenuStyle(
-                                  padding: WidgetStatePropertyAll(
-                                    EdgeInsets.zero,
+                                  inputDecorationTheme: InputDecorationTheme(
+                                    filled: true,
+                                    fillColor: value.getBackgroundColor(
+                                      brightness,
+                                    ),
                                   ),
-                                ),
-                                dropdownMenuEntries: ClaimStatus.values
-                                    .map(
-                                      (status) => DropdownMenuEntry(
-                                        value: status,
-                                        leadingIcon: Icon(status.icon),
-                                        label: status.displayName,
-                                        style: ButtonStyle(
-                                          backgroundColor:
-                                              WidgetStatePropertyAll(
-                                                status.getBackgroundColor(
-                                                  brightness,
+                                  textStyle: TextStyle(
+                                    color: value.getForegroundColor(brightness),
+                                  ),
+                                  menuStyle: const MenuStyle(
+                                    padding: WidgetStatePropertyAll(
+                                      EdgeInsets.zero,
+                                    ),
+                                  ),
+                                  dropdownMenuEntries: ClaimStatus.values
+                                      .map(
+                                        (status) => DropdownMenuEntry(
+                                          value: status,
+                                          leadingIcon: Icon(status.icon),
+                                          label: status.displayName,
+                                          style: ButtonStyle(
+                                            backgroundColor:
+                                                WidgetStatePropertyAll(
+                                                  status.getBackgroundColor(
+                                                    brightness,
+                                                  ),
                                                 ),
-                                              ),
-                                          foregroundColor:
-                                              WidgetStatePropertyAll(
-                                                status.getForegroundColor(
-                                                  brightness,
+                                            foregroundColor:
+                                                WidgetStatePropertyAll(
+                                                  status.getForegroundColor(
+                                                    brightness,
+                                                  ),
                                                 ),
-                                              ),
+                                          ),
                                         ),
-                                      ),
-                                    )
-                                    .toList(),
-                                onSelected: (newStatus) {
-                                  if (newStatus != null) {
-                                    _selectedStatus.value = newStatus;
-                                  }
-                                },
-                              );
-                            },
+                                      )
+                                      .toList(),
+                                  onSelected: (newStatus) {
+                                    if (newStatus != null) {
+                                      _selectedStatus.value = newStatus;
+                                    }
+                                  },
+                                );
+                              },
+                            ),
                           ),
                         ],
                       ),
@@ -332,7 +335,7 @@ class _InformationFormScreenState extends State<InformationFormScreen> {
                     ],
                     const SizedBox(height: 16),
                     SizedBox(
-                      height: 40,
+                      height: 50,
                       width: double.infinity,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8),
